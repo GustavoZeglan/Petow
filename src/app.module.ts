@@ -17,7 +17,7 @@ dotenv.config();
         database: process.env.POSTGRES_DB,
         logging: process.env.DATABASE_LOGGING === "true",
         migrations: [
-          __dirname + "/share/infra/typeorm/migrations/**/*{.ts,.js}",
+          __dirname + "/infra/typeorm/migrations/**/*{.ts,.js}",
         ],
         entities: [__dirname + "/**/*.entity.{js,ts}"],
         synchronize: false,
