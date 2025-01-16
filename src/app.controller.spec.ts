@@ -6,8 +6,8 @@ test("Get to status should return 200", async () => {
   const res = await fetch(`${SERVER_URL}/status`);
   expect(res.status).toBe(200);
 
-  const responseBody: HttpResponseDTO = await res.json()
-  const status: StatusDTO = responseBody.data; 
+  const responseBody: HttpResponseDTO = await res.json();
+  const status: StatusDTO = responseBody.data;
   expect(status.updatedAt).toBeDefined();
 
   const parsedUpdatedAt = new Date(status.updatedAt).toISOString();

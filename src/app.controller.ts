@@ -9,16 +9,21 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly databaseService: DatabaseService,
-  ) { }
+  ) {}
 
   @Get("/status")
   async getStatus() {
-    const connections = Number(await this.databaseService.getActiveConnections());
+    const connections = Number(
+      await this.databaseService.getActiveConnections(),
+    );
     const pools = await this.databaseService.getPoolConnections();
     const updateAt = new Date().toISOString();
     const status = StatusDTO.toDto(updateAt, connections, pools);
 
-    return new HttpResponseDTO(HttpStatus.OK, 'Status retrieved with success', status);
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Status retrieved with success",
+      status,
+    );
   }
-
 }

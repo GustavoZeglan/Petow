@@ -1,12 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { InjectDataSource } from "@nestjs/typeorm";
+import { DataSource } from "typeorm";
 
 @Injectable()
 export class DatabaseService {
-  constructor(
-    @InjectDataSource() private readonly dataSource: DataSource
-  ) { }
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   async getActiveConnections(): Promise<number> {
     try {
@@ -20,8 +18,8 @@ export class DatabaseService {
         `);
       return result[0].active_connections;
     } catch (error) {
-      console.error('Error fetching active connections', error);
-      throw new Error('Failed to fetch active connections');
+      console.error("Error fetching active connections", error);
+      throw new Error("Failed to fetch active connections");
     }
   }
 
@@ -38,9 +36,8 @@ export class DatabaseService {
         `);
       return result[0].active_connections; // Retorna o número de conexões no pool
     } catch (error) {
-      console.error('Error fetching pool connections', error);
-      throw new Error('Failed to fetch pool connections');
+      console.error("Error fetching pool connections", error);
+      throw new Error("Failed to fetch pool connections");
     }
   }
-
 }

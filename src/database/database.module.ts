@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseService } from './database.service';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { DatabaseService } from "./database.service";
 
 @Module({
   imports: [
@@ -13,9 +13,7 @@ import { DatabaseService } from './database.service';
         password: String(process.env.POSTGRES_PASSWORD),
         database: process.env.POSTGRES_DB,
         logging: process.env.DATABASE_LOGGING === "true",
-        migrations: [
-          __dirname + "/infra/typeorm/migrations/**/*{.ts,.js}",
-        ],
+        migrations: [__dirname + "/infra/typeorm/migrations/**/*{.ts,.js}"],
         entities: [__dirname + "/**/*.entity.{js,ts}"],
         synchronize: false,
         migrationsRun: true,
@@ -23,6 +21,6 @@ import { DatabaseService } from './database.service';
     }),
   ],
   controllers: [],
-  providers: [DatabaseService]
+  providers: [DatabaseService],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
