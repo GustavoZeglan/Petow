@@ -1,22 +1,18 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { SERVER_URL } from "./common/constants/urls";
+import { HttpResponseDTO } from "./common/classes/HttpResponseDTO";
+import { StatusDTO } from "./common/classes/StatusDTO";
 
-describe("AppController", () => {
-  let appController: AppController;
+test("Get to status should return 200", async () => {
+  const res = await fetch(`${SERVER_URL}/status`);
+  expect(res.status).toBe(200);
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
-    }).compile();
+  const responseBody: HttpResponseDTO = await res.json();
+  const status: StatusDTO = responseBody.data;
+  expect(status.updatedAt).toBeDefined();
 
-    appController = app.get<AppController>(AppController);
-  });
+  const parsedUpdatedAt = new Date(status.updatedAt).toISOString();
+  expect(status.updatedAt).toEqual(parsedUpdatedAt);
 
-  describe("root", () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe("Hello World!");
-    });
-  });
+  expect(status.database.connections).toBeGreaterThanOrEqual(1);
+  expect(status.database.pools).toBeGreaterThanOrEqual(1);
 });
