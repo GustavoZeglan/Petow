@@ -8,11 +8,11 @@ test("Get to status should return 200", async () => {
 
   const responseBody: HttpResponseDTO = await res.json();
   const status: StatusDTO = responseBody.data;
-  expect(status.updatedAt).toBeDefined();
 
   const parsedUpdatedAt = new Date(status.updatedAt).toISOString();
   expect(status.updatedAt).toEqual(parsedUpdatedAt);
 
-  expect(status.database.connections).toBeGreaterThanOrEqual(1);
-  expect(status.database.pools).toBeGreaterThanOrEqual(1);
+  expect(status.database.version).toEqual("16.0");
+  expect(status.database.maxConnections).toBeGreaterThanOrEqual(1);
+  expect(status.database.openedConnections).toEqual(1);
 });

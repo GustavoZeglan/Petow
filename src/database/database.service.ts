@@ -4,40 +4,50 @@ import { DataSource } from "typeorm";
 
 @Injectable()
 export class DatabaseService {
-  constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
+  databaseName: string | undefined;
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) {
+    this.databaseName = process.env.POSTGRES_DB;
+  }
 
-  async getActiveConnections(): Promise<number> {
+  async getOpenedConnections(): Promise<number> {
     try {
       const result = await this.dataSource.query(`
           SELECT
-            count(*) AS active_connections
+            count(*)::int AS opened_connections
           FROM
             pg_stat_activity
           WHERE
-            state = 'active';
+            datname = '${this.databaseName}'
         `);
-      return result[0].active_connections;
+      return result[0].opened_connections;
     } catch (error) {
       console.error("Error fetching active connections", error);
       throw new Error("Failed to fetch active connections");
     }
   }
 
-  async getPoolConnections(): Promise<number> {
+  async getMaxConnections(): Promise<number> {
     try {
       const result = await this.dataSource.query(`
-          SELECT
-            datname,
-            numbackends AS active_connections
-          FROM
-            pg_stat_database
-          WHERE
-            datname = current_database();
+          SHOW max_connections
         `);
-      return result[0].active_connections; // Retorna o número de conexões no pool
+      return result[0].max_connections;
     } catch (error) {
-      console.error("Error fetching pool connections", error);
-      throw new Error("Failed to fetch pool connections");
+      console.error("Error fetching opened connections", error);
+      throw new Error("Failed to fetch opened connections");
     }
   }
+
+  async getDatabaseVersion(): Promise<string> {
+    try {
+      const result = await this.dataSource.query(`
+          SHOW server_version; 
+        `);
+      return result[0].server_version;
+    } catch (error) {
+      console.error("Error fetching database version", error);
+      throw new Error("Failed to fetch database version");
+    }
+  }
+
 }

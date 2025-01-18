@@ -13,12 +13,14 @@ export class AppController {
 
   @Get("/status")
   async getStatus() {
-    const connections = Number(
-      await this.databaseService.getActiveConnections(),
+    const databaseVersion = await this.databaseService.getDatabaseVersion(); 
+    const maxConnections = Number(
+      await this.databaseService.getMaxConnections(),
     );
-    const pools = await this.databaseService.getPoolConnections();
+    const openedConnections = await this.databaseService.getOpenedConnections();
     const updateAt = new Date().toISOString();
-    const status = StatusDTO.toDto(updateAt, connections, pools);
+
+    const status = StatusDTO.toDto(updateAt, databaseVersion, maxConnections, openedConnections);
 
     return new HttpResponseDTO(
       HttpStatus.OK,

@@ -13,6 +13,7 @@ import { DatabaseService } from "./database.service";
         password: String(process.env.POSTGRES_PASSWORD),
         database: process.env.POSTGRES_DB,
         logging: process.env.DATABASE_LOGGING === "true",
+        ssl: process.env.NODE_ENV === "development" ? false : true,
         migrations: [__dirname + "/infra/typeorm/migrations/**/*{.ts,.js}"],
         entities: [__dirname + "/**/*.entity.{js,ts}"],
         synchronize: false,
