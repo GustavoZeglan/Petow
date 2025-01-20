@@ -1,6 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
+import { getNewClient } from "src/infra/data-source";
 import { DataSource } from "typeorm";
+import { join } from "path";
+import migrationRunner, { RunnerOption } from "node-pg-migrate";
+import { Client } from "pg";
 
 @Injectable()
 export class DatabaseService {
@@ -48,6 +52,43 @@ export class DatabaseService {
       console.error("Error fetching database version", error);
       throw new Error("Failed to fetch database version");
     }
+  }
+
+  async executeMigrations() {
+    const dbClient = await getNewClient();
+    const defaultMigrationOptions = await this.getDefaultMigrationOptions(false, dbClient);
+
+    const migretedMigrations = await migrationRunner(defaultMigrationOptions);
+    await dbClient.end();
+
+    return migretedMigrations;
+  }
+
+  async getPendingMigrations() {
+    const dbClient = await getNewClient();
+    const defaultMigrationOptions = await this.getDefaultMigrationOptions(true, dbClient);
+
+    const pendingMigrations = await migrationRunner(defaultMigrationOptions);
+    await dbClient.end();
+
+    return pendingMigrations;
+  }
+
+  private async getDefaultMigrationOptions(isDry: boolean, dbClient: Client): Promise<RunnerOption> {
+    const defaultMigrationOptions = {
+      dbClient,
+      dryRun: isDry,
+      dir: join("src", "infra", "migrations"),
+      direction: "up",
+      verbose: true,
+      migrationsTable: "pgmigrations",
+    } as RunnerOption;
+    
+    return defaultMigrationOptions;
+  }
+
+  async cleanDatabase() {
+    await this.dataSource.query("drop schema public cascade; create schema public;");
   }
 
 }

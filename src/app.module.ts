@@ -5,10 +5,17 @@ import { DatabaseModule } from "./database/database.module";
 import * as dotenv from "dotenv";
 import { DatabaseService } from "./database/database.service";
 import { RequestLoggerMiddleware } from "./common/middlewares/request-logger.middleware";
+import { ConfigModule } from "@nestjs/config";
 dotenv.config();
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
+    DatabaseModule,
+  ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
 })

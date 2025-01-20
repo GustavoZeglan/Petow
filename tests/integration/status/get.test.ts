@@ -1,6 +1,6 @@
-import { SERVER_URL } from "./common/constants/urls";
-import { HttpResponseDTO } from "./common/classes/HttpResponseDTO";
-import { StatusDTO } from "./common/classes/StatusDTO";
+import { SERVER_URL } from "src/common/constants/urls";
+import { HttpResponseDTO } from "src/common/classes/HttpResponseDTO";
+import { StatusDTO } from "src/common/classes/StatusDTO";
 
 test("Get to status should return 200", async () => {
   const res = await fetch(`${SERVER_URL}/status`);
