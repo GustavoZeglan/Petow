@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Post } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { DatabaseService } from "./database/database.service";
 import { StatusDTO } from "./common/classes/StatusDTO";
@@ -28,4 +28,27 @@ export class AppController {
       status,
     );
   }
+
+  @Get("/migrations")
+  async getMigrations() {
+    const migrations = await this.databaseService.getPendingMigrations();
+    
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Migrations retrieved with success",
+      migrations,
+    );
+  }
+
+  @Post("/migrations")
+  async runMigrations() {
+    const migrations = await this.databaseService.executeMigrations();
+    
+    return new HttpResponseDTO(
+      migrations.length > 0 ? HttpStatus.CREATED : HttpStatus.OK,
+      undefined, 
+      migrations
+    );
+  }
+
 }
