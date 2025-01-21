@@ -12,7 +12,7 @@ beforeAll(async () => {
       TypeOrmModule.forRootAsync({
         useFactory: async () => {
           return AppDataSource.options;
-        }
+        },
       }),
     ],
     providers: [DatabaseService],

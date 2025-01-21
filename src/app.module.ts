@@ -11,7 +11,7 @@ dotenv.config();
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: ".env",
       isGlobal: true,
     }),
     DatabaseModule,
