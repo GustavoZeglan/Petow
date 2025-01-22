@@ -3,8 +3,6 @@ import { config } from "dotenv";
 import { join } from "path";
 config();
 
-console.log(join(__dirname, "migrations"));
-
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.POSTGRES_HOST,
@@ -14,7 +12,7 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DB,
   logging: process.env.DATABASE_LOGGING === "true",
   ssl: getSSLValues(),
-  entities: [__dirname + "/**/*.entity.{js,ts}"],
+  entities: [join(__dirname, "..", "core", "entities", "*.entity.{js,ts}")],
   migrations: [join(__dirname, "migrations", "*{.ts,.js}")],
   migrationsTableName: "migrations",
   synchronize: false,
