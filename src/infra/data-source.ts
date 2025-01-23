@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { config } from "dotenv";
-import { Client } from "pg";
+import { join } from "path";
 config();
 
 export const AppDataSource = new DataSource({
@@ -12,24 +12,12 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DB,
   logging: process.env.DATABASE_LOGGING === "true",
   ssl: getSSLValues(),
-  entities: [__dirname + "/**/*.entity.{js,ts}"],
+  entities: [join(__dirname, "..", "core", "entities", "*.entity.{js,ts}")],
+  migrations: [join(__dirname, "migrations", "*{.ts,.js}")],
+  migrationsTableName: "migrations",
   synchronize: false,
-  migrationsRun: true,
+  migrationsRun: false,
 });
-
-export async function getNewClient() {
-  const client = new Client({
-    host: process.env.POSTGRES_HOST,
-    port: Number(process.env.POSTGRES_PORT),
-    user: process.env.POSTGRES_USER,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
-    ssl: getSSLValues(),
-  });
-
-  await client.connect();
-  return client;
-}
 
 function getSSLValues() {
   if (process.env.POSTGRES_CA) {

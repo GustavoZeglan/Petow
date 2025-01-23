@@ -6,12 +6,17 @@ export class StatusDTO {
     openedConnections: number;
   };
 
-  constructor(updatedAt: string, version: string, maxConnections: number, openedConnections: number) {
+  constructor(
+    updatedAt: string,
+    version: string,
+    maxConnections: number,
+    openedConnections: number,
+  ) {
     this.updatedAt = updatedAt;
     this.database = {
       version: version,
       maxConnections: maxConnections,
-      openedConnections: openedConnections
+      openedConnections: openedConnections,
     };
   }
 

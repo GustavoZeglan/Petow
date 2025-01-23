@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
-import { getNewClient } from "src/infra/data-source";
 import { DataSource } from "typeorm";
-import { join } from "path";
-import migrationRunner, { RunnerOption } from "node-pg-migrate";
-import { Client } from "pg";
 
 @Injectable()
 export class DatabaseService {
@@ -50,45 +50,31 @@ export class DatabaseService {
       return result[0].server_version;
     } catch (error) {
       console.error("Error fetching database version", error);
-      throw new Error("Failed to fetch database version");
+      throw new InternalServerErrorException(
+        "Failed to fetch database version",
+      );
     }
   }
 
-  async executeMigrations() {
-    const dbClient = await getNewClient();
-    const defaultMigrationOptions = await this.getDefaultMigrationOptions(false, dbClient);
-
-    const migretedMigrations = await migrationRunner(defaultMigrationOptions);
-    await dbClient.end();
-
-    return migretedMigrations;
+  async runMigrations() {
+    try {
+      const executedMigrations = await this.dataSource.runMigrations();
+      Logger.log(`Migrations executed successfully ${executedMigrations}`);
+      return executedMigrations;
+    } catch (error) {
+      throw new InternalServerErrorException("Failed to run migrations");
+    }
   }
 
-  async getPendingMigrations() {
-    const dbClient = await getNewClient();
-    const defaultMigrationOptions = await this.getDefaultMigrationOptions(true, dbClient);
-
-    const pendingMigrations = await migrationRunner(defaultMigrationOptions);
-    await dbClient.end();
-
-    return pendingMigrations;
-  }
-
-  private async getDefaultMigrationOptions(isDry: boolean, dbClient: Client): Promise<RunnerOption> {
-    const defaultMigrationOptions = {
-      dbClient,
-      dryRun: isDry,
-      dir: join("src", "infra", "migrations"),
-      direction: "up",
-      verbose: true,
-      migrationsTable: "pgmigrations",
-    } as RunnerOption;
-    
-    return defaultMigrationOptions;
+  async getHasPendingMigrations() {
+    const hasPendingMigrations = await this.dataSource.showMigrations();
+    Logger.log(`Has Pending migrations ${hasPendingMigrations}`);
+    return hasPendingMigrations;
   }
 
   async cleanDatabase() {
-    await this.dataSource.query("drop schema public cascade; create schema public;");
+    await this.dataSource.query(
+      "drop schema public cascade; create schema public;",
+    );
   }
-
 }

@@ -6,18 +6,22 @@ import * as dotenv from "dotenv";
 import { DatabaseService } from "./database/database.service";
 import { RequestLoggerMiddleware } from "./common/middlewares/request-logger.middleware";
 import { ConfigModule } from "@nestjs/config";
+import { ServiceService } from "./service/service.service";
+import { ServiceController } from "./service/service.controller";
+import ServiceEntity from "./core/entities/service.entity";
 dotenv.config();
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: ".env",
       isGlobal: true,
     }),
     DatabaseModule,
+    ServiceEntity,
   ],
-  controllers: [AppController],
-  providers: [AppService, DatabaseService],
+  controllers: [AppController, ServiceController],
+  providers: [AppService, DatabaseService, ServiceService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

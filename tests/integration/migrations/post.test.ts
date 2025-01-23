@@ -12,7 +12,7 @@ beforeAll(async () => {
       TypeOrmModule.forRootAsync({
         useFactory: async () => {
           return AppDataSource.options;
-        }
+        },
       }),
     ],
     providers: [DatabaseService],
@@ -28,7 +28,7 @@ test("Post to migrations", async () => {
   const response1 = await fetch(`${SERVER_URL}/migrations`, {
     method: "POST",
   });
-  
+
   const response1Body: HttpResponseDTO = await response1.json();
   expect(response1Body.status).toBe(201);
 
@@ -39,7 +39,7 @@ test("Post to migrations", async () => {
   const response2 = await fetch(`${SERVER_URL}/migrations`, {
     method: "POST",
   });
-  
+
   const response2Body: HttpResponseDTO = await response2.json();
   expect(response2Body.status).toBe(200);
 

@@ -13,14 +13,19 @@ export class AppController {
 
   @Get("/status")
   async getStatus() {
-    const databaseVersion = await this.databaseService.getDatabaseVersion(); 
+    const databaseVersion = await this.databaseService.getDatabaseVersion();
     const maxConnections = Number(
       await this.databaseService.getMaxConnections(),
     );
     const openedConnections = await this.databaseService.getOpenedConnections();
     const updateAt = new Date().toISOString();
 
-    const status = StatusDTO.toDto(updateAt, databaseVersion, maxConnections, openedConnections);
+    const status = StatusDTO.toDto(
+      updateAt,
+      databaseVersion,
+      maxConnections,
+      openedConnections,
+    );
 
     return new HttpResponseDTO(
       HttpStatus.OK,
@@ -31,24 +36,24 @@ export class AppController {
 
   @Get("/migrations")
   async getMigrations() {
-    const migrations = await this.databaseService.getPendingMigrations();
-    
+    const hasPendingMigrations =
+      await this.databaseService.getHasPendingMigrations();
+
     return new HttpResponseDTO(
       HttpStatus.OK,
-      "Migrations retrieved with success",
-      migrations,
+      `Has pending migrations?`,
+      hasPendingMigrations,
     );
   }
 
   @Post("/migrations")
   async runMigrations() {
-    const migrations = await this.databaseService.executeMigrations();
-    
+    const migrations = await this.databaseService.runMigrations();
+
     return new HttpResponseDTO(
       migrations.length > 0 ? HttpStatus.CREATED : HttpStatus.OK,
-      undefined, 
-      migrations
+      undefined,
+      migrations,
     );
   }
-
 }

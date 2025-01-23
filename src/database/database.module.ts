@@ -8,7 +8,7 @@ import { AppDataSource } from "src/infra/data-source";
     TypeOrmModule.forRootAsync({
       useFactory: async () => {
         return AppDataSource.options;
-      }
+      },
     }),
   ],
   controllers: [],
