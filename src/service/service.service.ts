@@ -7,7 +7,7 @@ import ServiceDTO from "src/common/classes/ServiceDTO";
 export class ServiceService {
   private readonly serviceRepository = ServiceRepository(this.dataSource);
 
-  constructor(private readonly dataSource: DataSource) { }
+  constructor(private readonly dataSource: DataSource) {}
 
   async findServices() {
     const services = await this.serviceRepository.findAll();

@@ -14,7 +14,11 @@ export default class ServiceDTO {
   }
 
   static fromEntity(entity: ServiceEntity): ServiceDTO {
-    return new ServiceDTO(entity.id, entity.type, entity.hasPath, entity.isUnitary)
+    return new ServiceDTO(
+      entity.id,
+      entity.type,
+      entity.hasPath,
+      entity.isUnitary,
+    );
   }
-
-} 
+}

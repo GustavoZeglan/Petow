@@ -6,7 +6,7 @@ test("Get to service should be return 200", async () => {
   const res = await fetch(`${SERVER_URL}/service`);
   expect(res.status).toBe(200);
 
-  const responseBody: HttpResponseDTO = await res.json();  
+  const responseBody: HttpResponseDTO = await res.json();
   expect(Array.isArray(responseBody.data)).toBe(true);
 
   const data: ServiceDTO[] = responseBody.data;
