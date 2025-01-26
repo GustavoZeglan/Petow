@@ -106,8 +106,8 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey("service_order", "customer_id");
     await queryRunner.dropForeignKey("service_order", "provider_id");
-    await queryRunner.dropForeignKey("service_order", "service_id");
     await queryRunner.dropForeignKey("service_order", "address_id");
+    await queryRunner.dropForeignKey("service_order", "service_id");
     await queryRunner.dropTable("service_order");
   }
 }
