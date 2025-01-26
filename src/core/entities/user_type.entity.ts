@@ -7,24 +7,18 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import ServiceOrderEntity from "./service_order.entity";
+import UserEntity from "./user.entity";
 
-@Entity("services")
-export default class ServiceEntity {
+@Entity("user_type")
+export default class UserTypeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "type", type: "varchar" })
+  @Column({ name: "type", type: "varchar", length: "50" })
   type: string;
 
-  @Column({ name: "has_path", type: "boolean" })
-  hasPath: boolean;
-
-  @Column({ name: "is_unitary", type: "boolean" })
-  isUnitary: boolean;
-
-  @OneToMany(() => ServiceOrderEntity, (serviceOrders) => serviceOrders.service)
-  serviceOrders: ServiceOrderEntity[];
+  @OneToMany(() => UserEntity, (user) => user.type)
+  users: UserEntity[];
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;
