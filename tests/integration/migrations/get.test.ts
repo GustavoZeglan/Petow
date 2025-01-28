@@ -30,7 +30,5 @@ test("Get to migrations should return 200", async () => {
 
   const responseBody: HttpResponseDTO = await res.json();
 
-  console.log(responseBody);
-
   expect(Array.isArray(responseBody.data)).toBe(true);
 });

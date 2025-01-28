@@ -8,6 +8,8 @@ import { RequestLoggerMiddleware } from "./common/middlewares/request-logger.mid
 import { ConfigModule } from "@nestjs/config";
 import { ServiceService } from "./service/service.service";
 import { ServiceController } from "./service/service.controller";
+import { ServiceOrderController } from "./service-order/service-order.controller";
+import { ServiceOrderService } from "./service-order/service-order.service";
 import ServiceEntity from "./core/entities/service.entity";
 dotenv.config();
 
@@ -20,8 +22,8 @@ dotenv.config();
     DatabaseModule,
     ServiceEntity,
   ],
-  controllers: [AppController, ServiceController],
-  providers: [AppService, DatabaseService, ServiceService],
+  controllers: [AppController, ServiceController, ServiceOrderController],
+  providers: [AppService, DatabaseService, ServiceService, ServiceOrderService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

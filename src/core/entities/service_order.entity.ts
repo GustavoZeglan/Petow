@@ -5,12 +5,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import UserEntity from "./user.entity";
 import ServiceEntity from "./service.entity";
 import AddressEntity from "./address.entity";
+import ServiceOrderPetEntity from "./service_order_pet.entity";
 
 @Entity("service_order")
 export default class ServiceOrderEntity {
@@ -20,10 +22,10 @@ export default class ServiceOrderEntity {
   @Column({ name: "duration_minutes", type: "int" })
   durationMinutes: number;
 
-  @Column({ name: "is_accepted", type: "boolean"})
+  @Column({ name: "is_accepted", type: "boolean", nullable: true })
   isAccepted: boolean;
 
-  @Column({ name: "is_done", type: "boolean"})
+  @Column({ name: "is_done", type: "boolean", nullable: true })
   isDone: boolean;
 
   @ManyToOne(() => ServiceEntity, (service) => service)
@@ -41,6 +43,12 @@ export default class ServiceOrderEntity {
   @ManyToOne(() => AddressEntity, (address) => address.serviceOrders)
   @JoinColumn({ name: "address_id" })
   address: AddressEntity;
+
+  @OneToMany(
+    () => ServiceOrderPetEntity,
+    (serviceOrderPet) => serviceOrderPet.serviceOrder,
+  )
+  serviceOrderPets: ServiceOrderPetEntity[];
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;

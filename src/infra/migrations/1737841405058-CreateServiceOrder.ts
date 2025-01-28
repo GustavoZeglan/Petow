@@ -17,6 +17,8 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
             name: "id",
             type: "int",
             isPrimary: true,
+            isGenerated: true,
+            generationStrategy: "increment",
           },
           {
             name: "service_id",
@@ -41,10 +43,12 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
           {
             name: "is_accepted",
             type: "boolean",
+            isNullable: true,
           },
           {
             name: "is_done",
             type: "boolean",
+            isNullable: true,
           },
           {
             name: "created_at",
@@ -72,6 +76,7 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
         columnNames: ["customer_id"],
         referencedTableName: "users",
         referencedColumnNames: ["id"],
+        name: "FK_service_order_customer_id",
       }),
     );
 
@@ -81,6 +86,7 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
         columnNames: ["provider_id"],
         referencedTableName: "users",
         referencedColumnNames: ["id"],
+        name: "FK_service_order_provider_id",
       }),
     );
 
@@ -90,6 +96,7 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
         columnNames: ["service_id"],
         referencedTableName: "services",
         referencedColumnNames: ["id"],
+        name: "FK_service_order_service_id",
       }),
     );
 
@@ -99,15 +106,28 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
         columnNames: ["address_id"],
         referencedTableName: "address",
         referencedColumnNames: ["id"],
+        name: "FK_service_order_address_id",
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("service_order", "customer_id");
-    await queryRunner.dropForeignKey("service_order", "provider_id");
-    await queryRunner.dropForeignKey("service_order", "address_id");
-    await queryRunner.dropForeignKey("service_order", "service_id");
+    await queryRunner.dropForeignKey(
+      "service_order",
+      "FK_service_order_customer_id",
+    );
+    await queryRunner.dropForeignKey(
+      "service_order",
+      "FK_service_order_provider_id",
+    );
+    await queryRunner.dropForeignKey(
+      "service_order",
+      "FK_service_order_address_id",
+    );
+    await queryRunner.dropForeignKey(
+      "service_order",
+      "FK_service_order_service_id",
+    );
     await queryRunner.dropTable("service_order");
   }
 }

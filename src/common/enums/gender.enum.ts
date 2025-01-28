@@ -1,5 +1,5 @@
 export enum genderEnum {
-  man = "M", 
+  man = "M",
   woman = "W",
-  another = "A"
-} 
+  another = "A",
+}
