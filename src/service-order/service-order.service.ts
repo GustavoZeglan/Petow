@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from "@nestjs/common";
 import { ServiceOrderRepository } from "./service-order.repository";
 import { DataSource, In, QueryRunner } from "typeorm";
@@ -133,6 +134,20 @@ export class ServiceOrderService {
     await queryRunner.manager.save(
       ServiceOrderPetEntity,
       serviceOrdersPetsToCreate,
+    );
+  }
+
+  async markServiceOrderAsAccepted(serviceOrderId: number) {
+    const serviceOrder = await this.serviceOrderRepository.findOneBy({
+      id: serviceOrderId,
+    });
+    if (!serviceOrder) throw new NotFoundException("Service Order not found");
+
+    if (serviceOrder.isAccepted)
+      throw new BadRequestException("Service Order was already accepted");
+
+    await this.serviceOrderRepository.markServiceOrderAsAccepted(
+      serviceOrderId,
     );
   }
 }

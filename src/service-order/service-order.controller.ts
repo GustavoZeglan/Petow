@@ -1,4 +1,14 @@
-import { Body, Controller, Logger, Post, UsePipes } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Logger,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UsePipes,
+} from "@nestjs/common";
 import { HttpResponseDTO } from "src/common/classes/HttpResponseDTO";
 import { ServiceOrderService } from "./service-order.service";
 import { ZodValidationPipe } from "src/common/pipes/ZodValidationPipe.pipe";
@@ -27,6 +37,15 @@ export class ServiceOrderController {
       201,
       "Service Order create successfully",
       serviceOrder,
+    );
+  }
+
+  @Patch(":id")
+  async markServiceOrderAsAccepted(@Param("id", ParseIntPipe) id: number) {
+    await this.serviceOrderService.markServiceOrderAsAccepted(id);
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Service Order is accepted successfully",
     );
   }
 }

@@ -20,5 +20,12 @@ export const ServiceOrderRepository = (dataSource: DataSource) => {
         .where("serviceOrder.id = :id", { id })
         .getOne();
     },
+
+    async markServiceOrderAsAccepted(
+      this: Repository<ServiceOrderEntity>,
+      serviceOrderId: number,
+    ) {
+      await this.update({ id: serviceOrderId }, { isAccepted: true });
+    },
   });
 };
