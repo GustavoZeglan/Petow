@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Logger,
   Param,
@@ -46,6 +47,17 @@ export class ServiceOrderController {
     return new HttpResponseDTO(
       HttpStatus.OK,
       "Service Order is accepted successfully",
+    );
+  }
+
+  @Get("user/:id")
+  async getServiceOrdersOfUser(@Param("id", ParseIntPipe) id: number) {
+    const serviceOrders =
+      await this.serviceOrderService.getServiceOrdersOfUser(id);
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Service orders retrieved successfully",
+      serviceOrders,
     );
   }
 }

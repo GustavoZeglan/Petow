@@ -20,7 +20,24 @@ export const ServiceOrderRepository = (dataSource: DataSource) => {
         .where("serviceOrder.id = :id", { id })
         .getOne();
     },
-
+    async findServiceOrdersByUserId(
+      userId: number,
+      type: string,
+    ): Promise<ServiceOrderEntity[]> {
+      return this.createQueryBuilder("serviceOrder")
+        .innerJoinAndSelect("serviceOrder.customer", "customer")
+        .innerJoinAndSelect("serviceOrder.provider", "provider")
+        .innerJoinAndSelect("customer.type", "customerUserType")
+        .innerJoinAndSelect("provider.type", "providerUserType")
+        .innerJoinAndSelect("serviceOrder.service", "service")
+        .where(
+          type === "Customer"
+            ? "customer.id = :userId"
+            : "provider.id = :userId",
+          { userId },
+        )
+        .getMany();
+    },
     async markServiceOrderAsAccepted(
       this: Repository<ServiceOrderEntity>,
       serviceOrderId: number,

@@ -9,31 +9,31 @@ export default class ServiceOrderDTO {
   service: ServiceDTO;
   customer: UserDTO;
   provider: UserDTO;
-  address: AddressDTO;
   durationMinutes: number;
   isAccepted: boolean;
   isDone: boolean;
-  pets: PetDTO[] = [];
+  address?: AddressDTO;
+  pets?: PetDTO[] = [];
 
   constructor(
     id: number,
     service: ServiceDTO,
     customer: UserDTO,
     provider: UserDTO,
-    address: AddressDTO,
     durationMinutes: number,
     isAccepted: boolean,
     isDone: boolean,
-    pets: PetDTO[],
+    address?: AddressDTO,
+    pets?: PetDTO[],
   ) {
     this.id = id;
     this.service = service;
     this.customer = customer;
     this.provider = provider;
-    this.address = address;
     this.durationMinutes = durationMinutes;
     this.isAccepted = isAccepted;
     this.isDone = isDone;
+    if (address) this.address = address;
     if (pets) this.pets = pets;
   }
 
@@ -43,13 +43,15 @@ export default class ServiceOrderDTO {
       ServiceDTO.fromEntity(entity.service),
       UserDTO.fromEntity(entity.customer),
       UserDTO.fromEntity(entity.provider),
-      AddressDTO.fromEntity(entity.address),
       entity.durationMinutes,
       entity.isAccepted,
       entity.isDone,
-      entity.serviceOrderPets.flatMap((serviceOrderPet) =>
-        PetDTO.fromEntity(serviceOrderPet.pet),
-      ),
+      entity.address ? AddressDTO.fromEntity(entity.address) : undefined,
+      entity.serviceOrderPets
+        ? entity.serviceOrderPets?.flatMap((serviceOrderPet) =>
+            PetDTO.fromEntity(serviceOrderPet.pet),
+          )
+        : undefined,
     );
   }
 }

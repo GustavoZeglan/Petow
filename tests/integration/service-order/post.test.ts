@@ -40,7 +40,7 @@ test("POST should return 201", async () => {
   expect(data).toHaveProperty("address");
   expect(data).toHaveProperty("service");
 
-  data.pets.forEach((pet) => {
+  data.pets?.forEach((pet) => {
     expect(pet).toHaveProperty("id");
     expect(typeof pet.id).toBe("number");
 

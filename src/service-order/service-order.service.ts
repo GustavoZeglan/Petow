@@ -150,4 +150,23 @@ export class ServiceOrderService {
       serviceOrderId,
     );
   }
+
+  async getServiceOrdersOfUser(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ["type"],
+    });
+    if (!user) throw new NotFoundException("User not found");
+
+    const serviceOrders =
+      await this.serviceOrderRepository.findServiceOrdersByUserId(
+        userId,
+        user.type.type,
+      );
+    const formattedServiceOrders = serviceOrders.map((serviceOrder) =>
+      ServiceOrderDTO.fromEntity(serviceOrder),
+    );
+
+    return formattedServiceOrders;
+  }
 }
