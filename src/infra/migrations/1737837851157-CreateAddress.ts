@@ -17,6 +17,8 @@ export class CreateAddress1737837851157 implements MigrationInterface {
             name: "id",
             type: "int",
             isPrimary: true,
+            isGenerated: true,
+            generationStrategy: "increment",
           },
           {
             name: "user_id",
@@ -110,12 +112,13 @@ export class CreateAddress1737837851157 implements MigrationInterface {
         columnNames: ["user_id"],
         referencedTableName: "users",
         referencedColumnNames: ["id"],
+        name: "FK_address_user_id",
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("address", "user_id");
+    await queryRunner.dropForeignKey("address", "FK_address_user_id");
     await queryRunner.dropTable("address");
   }
 }

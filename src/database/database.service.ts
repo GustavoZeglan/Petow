@@ -25,7 +25,7 @@ export class DatabaseService {
         `);
       return result[0].opened_connections;
     } catch (error) {
-      console.error("Error fetching active connections", error);
+      Logger.error("Error fetching active connections", error);
       throw new Error("Failed to fetch active connections");
     }
   }
@@ -37,7 +37,7 @@ export class DatabaseService {
         `);
       return result[0].max_connections;
     } catch (error) {
-      console.error("Error fetching opened connections", error);
+      Logger.error("Error fetching opened connections", error);
       throw new Error("Failed to fetch opened connections");
     }
   }
@@ -49,7 +49,7 @@ export class DatabaseService {
         `);
       return result[0].server_version;
     } catch (error) {
-      console.error("Error fetching database version", error);
+      Logger.error("Error fetching database version", error);
       throw new InternalServerErrorException(
         "Failed to fetch database version",
       );

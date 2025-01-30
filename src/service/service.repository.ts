@@ -6,5 +6,12 @@ export const ServiceRepository = (dataSource: DataSource) => {
     async findAll(this: Repository<ServiceEntity>) {
       return this.find();
     },
+    async findById(this: Repository<ServiceEntity>, serviceId: number) {
+      return this.findOne({
+        where: {
+          id: serviceId,
+        },
+      });
+    },
   });
 };

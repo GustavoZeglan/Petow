@@ -1,10 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateService1737419351364 implements MigrationInterface {
+export class CreateBreed1737933180088 implements MigrationInterface {
+  name = "CreateBreed1737933180088";
+
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "services",
+        name: "breed",
         columns: [
           {
             name: "id",
@@ -13,22 +15,23 @@ export class CreateService1737419351364 implements MigrationInterface {
             isGenerated: true,
             generationStrategy: "increment",
           },
+          { name: "api_id", type: "int" },
+          { name: "name", type: "varchar", length: "255" },
           {
-            name: "type",
+            name: "breed_for",
+            type: "varchar",
+            length: "255",
+            isNullable: true,
+          },
+          { name: "temperament", type: "text", isNullable: true },
+          {
+            name: "life_span",
             type: "varchar",
             length: "50",
-            isNullable: false,
+            isNullable: true,
           },
-          {
-            name: "has_path",
-            type: "boolean",
-            isNullable: false,
-          },
-          {
-            name: "is_unitary",
-            type: "boolean",
-            isNullable: false,
-          },
+          { name: "weight", type: "varchar", length: "50", isNullable: true },
+          { name: "height", type: "varchar", length: "50", isNullable: true },
           {
             name: "created_at",
             type: "timestamp",
@@ -51,6 +54,6 @@ export class CreateService1737419351364 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("services");
+    await queryRunner.dropTable("breed");
   }
 }

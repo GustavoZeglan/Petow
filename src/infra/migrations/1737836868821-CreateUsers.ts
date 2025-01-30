@@ -17,6 +17,8 @@ export class CreateUsers1737836868821 implements MigrationInterface {
             name: "id",
             type: "int",
             isPrimary: true,
+            isGenerated: true,
+            generationStrategy: "increment",
           },
           {
             name: "name",
@@ -79,12 +81,13 @@ export class CreateUsers1737836868821 implements MigrationInterface {
         columnNames: ["user_type_id"],
         referencedTableName: "user_type",
         referencedColumnNames: ["id"],
+        name: "FK_user_user_type_id",
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("users", "user_type_id");
+    await queryRunner.dropForeignKey("users", "FK_user_user_type_id");
     await queryRunner.dropTable("users");
   }
 }
