@@ -1,8 +1,8 @@
 import { Controller, Get, HttpStatus, Post } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { DatabaseService } from "./database/database.service";
-import { StatusDTO } from "./common/classes/StatusDTO";
-import { HttpResponseDTO } from "./common/classes/HttpResponseDTO";
+import { DatabaseService } from "./infra/database/database.service";
+import { StatusDTO } from "./architecture/dtos/StatusDTO";
+import { HttpResponseDTO } from "./architecture/dtos/HttpResponseDTO";
 
 @Controller()
 export class AppController {

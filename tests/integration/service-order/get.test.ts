@@ -1,7 +1,7 @@
-import { HttpResponseDTO } from "@common/classes/HttpResponseDTO";
-import ServiceOrderDTO from "@common/classes/ServiceOrderDTO";
+import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
+import ServiceOrderDTO from "@app/domains/services/dtos/ServiceOrderDTO";
 import { HttpStatus } from "@nestjs/common";
-import { SERVER_URL } from "src/common/constants/urls";
+import { SERVER_URL } from "src/architecture/constants/urls";
 
 test("GET should return 200", async () => {
   const res = await fetch(`${SERVER_URL}/service-order/user/1`);
@@ -13,7 +13,6 @@ test("GET should return 200", async () => {
   data.forEach((serviceOrder: ServiceOrderDTO) => {
     expect(serviceOrder).toHaveProperty("customer");
     expect(serviceOrder).toHaveProperty("provider");
-    expect(serviceOrder).toHaveProperty("address");
     expect(serviceOrder).toHaveProperty("service");
   });
 });

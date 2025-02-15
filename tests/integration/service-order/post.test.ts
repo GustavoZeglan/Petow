@@ -1,6 +1,6 @@
-import ServiceOrderDTO from "@common/classes/ServiceOrderDTO";
-import { HttpResponseDTO } from "src/common/classes/HttpResponseDTO";
-import { SERVER_URL } from "src/common/constants/urls";
+import ServiceOrderDTO from "@app/domains/services/dtos/ServiceOrderDTO";
+import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
+import { SERVER_URL } from "src/architecture/constants/urls";
 
 test("POST should return 201", async () => {
   const body = {
@@ -10,12 +10,7 @@ test("POST should return 201", async () => {
     address_id: 1,
     duration_minutes: 50,
     pets: [
-      {
-        pet_id: 1,
-      },
-      {
-        pet_id: 2,
-      },
+      1, 2
     ],
   };
   1;

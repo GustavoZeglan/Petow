@@ -1,6 +1,6 @@
-import { HttpResponseDTO } from "src/common/classes/HttpResponseDTO";
-import ServiceDTO from "src/common/classes/ServiceDTO";
-import { SERVER_URL } from "src/common/constants/urls";
+import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
+import ServiceDTO from "@app/domains/services/dtos/ServiceDTO";
+import { SERVER_URL } from "src/architecture/constants/urls";
 
 test("Get to service should be return 200", async () => {
   const res = await fetch(`${SERVER_URL}/service`);
