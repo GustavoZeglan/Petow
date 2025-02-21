@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "commonjs",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -17,12 +17,13 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "moduleResolution": "nodenext",
-    "esModuleInterop": false,
-    "resolveJsonModule": true,
     "paths": {
-      "@common/*": ["src/common/*"],
-      "@core/*": ["src/core/*"]
+      "@architecture/*": ["src/architecture/*"],
+      "@infra/*": ["src/infra/*"],
+      "@app/*": ["src/*"],
+      "@users/*": ["src/domains/users/*"],
+      "@services/*": ["src/domains/services/*"],
+      "@pets/*": ["src/domains/pets/*"],
     }
   }
 }

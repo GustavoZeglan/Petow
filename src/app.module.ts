@@ -1,16 +1,14 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
-import { DatabaseModule } from "./database/database.module";
+import { AppController } from "@app/app.controller";
+import { AppService } from "@app/app.service";
+import { DatabaseModule } from "@infra/database/database.module";
 import * as dotenv from "dotenv";
-import { DatabaseService } from "./database/database.service";
-import { RequestLoggerMiddleware } from "./common/middlewares/request-logger.middleware";
+import { DatabaseService } from "@infra/database/database.service";
+import { RequestLoggerMiddleware } from "@architecture/middlewares/request-logger.middleware";
 import { ConfigModule } from "@nestjs/config";
-import { ServiceService } from "./service/service.service";
-import { ServiceController } from "./service/service.controller";
-import { ServiceOrderController } from "./service-order/service-order.controller";
-import { ServiceOrderService } from "./service-order/service-order.service";
-import ServiceEntity from "./core/entities/service.entity";
+import { PetsModule } from "@pets/pets.module";
+import { ServicesModule } from "@services/services.module";
+import { UsersModule } from "@users/users.module";
 dotenv.config();
 
 @Module({
@@ -20,10 +18,12 @@ dotenv.config();
       isGlobal: true,
     }),
     DatabaseModule,
-    ServiceEntity,
+    PetsModule,
+    ServicesModule,
+    UsersModule,
   ],
-  controllers: [AppController, ServiceController, ServiceOrderController],
-  providers: [AppService, DatabaseService, ServiceService, ServiceOrderService],
+  controllers: [AppController],
+  providers: [AppService, DatabaseService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
