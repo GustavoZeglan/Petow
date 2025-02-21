@@ -1,19 +1,7 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { join, resolve } from "path";
 import { config } from "dotenv";
-import { Logger } from "@nestjs/common";
 config();
-
-Logger.log("Database.Config");
-Logger.log(join(
-  __dirname,
-  "..",
-  "..",
-  "architecture",
-  "entities",
-  "*.entity.{js,ts}",
-),);
-Logger.log(join(__dirname, "migrations", "*{.ts,.js}"));
 
 export class DatabaseConfig {
   static connect(): TypeOrmModuleOptions {
@@ -25,7 +13,18 @@ export class DatabaseConfig {
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
       ssl: getSSLValues(),
-      entities: [resolve(join("@architecture", "entities", "*.entity.{js,ts}"))],
+      entities: [
+        resolve(
+          join(
+            __dirname,
+            "..",
+            "..",
+            "architecture",
+            "entities",
+            "*.entity.{js,ts}",
+          ),
+        ),
+      ],
       migrations: [resolve(join(__dirname, "..", "migrations", "*{.ts,.js}"))],
       logging: process.env.DATABASE_LOGGING === "true",
       migrationsTableName: "migrations",
