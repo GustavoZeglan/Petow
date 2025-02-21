@@ -1,7 +1,20 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { join } from "path";
 import { config } from "dotenv";
+import { Logger } from "@nestjs/common";
 config();
+
+
+Logger.log("Database.Config");
+Logger.log(join(
+  __dirname,
+  "..",
+  "..",
+  "architecture",
+  "entities",
+  "*.entity.{js,ts}",
+),);
+Logger.log(join(__dirname, "migrations", "*{.ts,.js}"));
 
 export class DatabaseConfig {
   static connect(): TypeOrmModuleOptions {
