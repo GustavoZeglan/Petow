@@ -59,6 +59,7 @@ export class DatabaseService {
   async runMigrations() {
     try {
       const executedMigrations = await this.dataSource.runMigrations();
+      Logger.log(executedMigrations);
       Logger.log(`Migrations executed successfully ${executedMigrations}`);
       return executedMigrations;
     } catch (error) {

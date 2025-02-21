@@ -1,10 +1,12 @@
 import { DataSource } from "typeorm";
 import { config } from "dotenv";
 import { join, resolve } from "path";
+import { Logger } from "@nestjs/common";
 config();
 
-console.log(resolve(join("@infra", "migrations", "*{.ts,.js}")));
-console.log(join("@architecture", "entities", "*.entity.{js,ts}"));
+Logger.log("DataSource");
+Logger.log(resolve(join("@infra", "migrations", "*{.ts,.js}")));
+Logger.log(join("@architecture", "entities", "*.entity.{js,ts}"));
 
 export const AppDataSource = new DataSource({
   type: "postgres",
