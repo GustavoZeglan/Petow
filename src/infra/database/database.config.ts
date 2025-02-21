@@ -37,7 +37,7 @@ export class DatabaseConfig {
         ),
       ],
       logging: process.env.DATABASE_LOGGING === "true",
-      migrations: [join(__dirname, "migrations", "*{.ts,.js}")],
+      migrations: [join(__dirname, "@infra", "migrations", "*{.ts,.js}")],
       migrationsTableName: "migrations",
       synchronize: false,
       migrationsRun: false,
