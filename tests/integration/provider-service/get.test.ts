@@ -16,5 +16,4 @@ test("GET should be return 200", async () => {
     expect(providerService).toHaveProperty("service");
     expect(providerService).toHaveProperty("provider");
   }
-
-}); 
+});

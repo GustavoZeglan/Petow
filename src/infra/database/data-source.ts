@@ -1,9 +1,10 @@
 import { DataSource } from "typeorm";
 import { config } from "dotenv";
-import { join } from "path";
+import { join, resolve } from "path";
 config();
 
-console.log(join(__dirname, "migrations"));
+console.log(resolve(join("@infra", "migrations", "*{.ts,.js}")));
+console.log(join("@architecture", "entities", "*.entity.{js,ts}"));
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -14,12 +15,8 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DB,
   logging: process.env.DATABASE_LOGGING === "true",
   ssl: getSSLValues(),
-  entities: [
-    join(__dirname, '..', 'domains', 'pets', 'entities', '*.entity.{js,ts}'),
-    join(__dirname, '..', 'domains', 'services', 'entities', '*.entity.{js,ts}'),
-    join(__dirname, '..', 'domains', 'users', 'entities', '*.entity.{js,ts}'),
-  ],
-  migrations: [join(__dirname, "migrations", "*{.ts,.js}")],
+  entities: [resolve(join("@architecture", "entities", "*.entity.{js,ts}"))],
+  migrations: [resolve(join(__dirname, "..", "migrations", "*{.ts,.js}"))],
   migrationsTableName: "migrations",
   synchronize: false,
   migrationsRun: false,

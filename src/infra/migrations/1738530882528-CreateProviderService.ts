@@ -1,7 +1,12 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from "typeorm";
 
 export class CreateProviderService1738530882528 implements MigrationInterface {
-  name = 'CreateProviderService1738530882528'
+  name = "CreateProviderService1738530882528";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -46,23 +51,28 @@ export class CreateProviderService1738530882528 implements MigrationInterface {
             isNullable: true,
           },
         ],
-      })
+      }),
     );
 
-    await queryRunner.createForeignKey("provider_service", new TableForeignKey({
-      columnNames: ["provider_id"],
-      referencedTableName: "users",
-      referencedColumnNames: ["id"],
-      name: "FK_provider_service_provider_id",
-    }));
+    await queryRunner.createForeignKey(
+      "provider_service",
+      new TableForeignKey({
+        columnNames: ["provider_id"],
+        referencedTableName: "users",
+        referencedColumnNames: ["id"],
+        name: "FK_provider_service_provider_id",
+      }),
+    );
 
-    await queryRunner.createForeignKey("provider_service", new TableForeignKey({
-      columnNames: ["service_id"],
-      referencedTableName: "services",
-      referencedColumnNames: ["id"],
-      name: "FK_provider_service_service_id",
-    }));
-
+    await queryRunner.createForeignKey(
+      "provider_service",
+      new TableForeignKey({
+        columnNames: ["service_id"],
+        referencedTableName: "services",
+        referencedColumnNames: ["id"],
+        name: "FK_provider_service_service_id",
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -77,5 +87,4 @@ export class CreateProviderService1738530882528 implements MigrationInterface {
 
     await queryRunner.dropTable("provider_service");
   }
-
 }

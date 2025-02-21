@@ -1,21 +1,25 @@
-import { Module } from '@nestjs/common';
-import ServiceEntity from '@services/entities/service.entity';
-import ServiceOrderEntity from '@services/entities/service_order.entity';
-import ProviderServiceEntity from '@services/entities/provider_service.entity';
-import ServiceOrderPetEntity from '@services/entities/service_order_pet.entity';
-import { ServiceController } from '@services/controllers/service.controller';
-import { ServiceOrderController } from '@services/controllers/service-order.controller';
-import { ProviderServiceController } from '@services/controllers/provider-service.controller';
-import { ServiceService } from '@services/services/service.service';
-import { ProviderServiceService } from '@services/services/provider-service.service';
-import { ServiceOrderService } from '@services/services/service-order.service';
-import ServiceRepository from '@services/repositories/service.repository';
-import { BaseRepository } from '@architecture/repositories/base.repository';
-import ServiceOrderRepository from '@services/repositories/service-order.repository';
-import ProviderServiceRepository from '@services/repositories/provider-service.repository';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from '../users/users.module';
-import { PetsModule } from '../pets/pets.module';
+import { Module } from "@nestjs/common";
+import ServiceEntity from "@architecture/entities/service.entity";
+import ServiceOrderEntity from "@architecture/entities/service_order.entity";
+import ProviderServiceEntity from "@architecture/entities/provider_service.entity";
+import ServiceOrderPetEntity from "@architecture/entities/service_order_pet.entity";
+import { ServiceController } from "@services/controllers/service.controller";
+import { ServiceOrderController } from "@services/controllers/serviceOrder.controller";
+import { ProviderServiceController } from "@services/controllers/providerService.controller";
+import { ServiceService } from "@services/services/service.service";
+import { ProviderServiceService } from "@services/services/providerService.service";
+import { ServiceOrderService } from "@app/domains/services/services/serviceOrder.service";
+import ServiceRepository from "@architecture/repositories/service.repository";
+import { BaseRepository } from "@architecture/repositories/base.repository";
+import ServiceOrderRepository from "@architecture/repositories/service_order.repository";
+import ProviderServiceRepository from "@architecture/repositories/provider_service.repository";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UsersModule } from "@users/users.module";
+import { PetsModule } from "@pets/pets.module";
+import { ServiceProvidedService } from "@services/services/serviceProvided.service";
+import ServiceProvidedRepository from "@architecture/repositories/service_provided.repository";
+import { ServiceProvidedEntity } from "@architecture/entities/service_provided.entity";
+import { ServiceProvidedController } from "@services/controllers/service-provided.controller";
 
 @Module({
   imports: [
@@ -24,6 +28,7 @@ import { PetsModule } from '../pets/pets.module';
       ServiceOrderEntity,
       ProviderServiceEntity,
       ServiceOrderPetEntity,
+      ServiceProvidedEntity,
     ]),
     UsersModule,
     PetsModule,
@@ -32,6 +37,7 @@ import { PetsModule } from '../pets/pets.module';
     ServiceController,
     ServiceOrderController,
     ProviderServiceController,
+    ServiceProvidedController,
   ],
   providers: [
     ServiceService,
@@ -41,6 +47,8 @@ import { PetsModule } from '../pets/pets.module';
     ServiceRepository,
     ServiceOrderRepository,
     ProviderServiceRepository,
+    ServiceProvidedService,
+    ServiceProvidedRepository,
   ],
   exports: [
     ServiceService,
@@ -48,7 +56,7 @@ import { PetsModule } from '../pets/pets.module';
     ProviderServiceService,
     ServiceRepository,
     ServiceOrderRepository,
-    ProviderServiceRepository
-  ]
+    ProviderServiceRepository,
+  ],
 })
-export class ServicesModule { }
+export class ServicesModule {}

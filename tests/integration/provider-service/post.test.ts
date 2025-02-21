@@ -2,7 +2,6 @@ import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
 import { SERVER_URL } from "src/architecture/constants/urls";
 
 test(`POST should return 201`, async () => {
-
   const body = {
     price: 100,
     service_id: 1,
@@ -27,5 +26,4 @@ test(`POST should return 201`, async () => {
   expect(data).toHaveProperty("price");
   expect(data).toHaveProperty("service");
   expect(data).toHaveProperty("provider");
-
 });

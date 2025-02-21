@@ -48,7 +48,17 @@ export class CreateServiceOrder1737841405058 implements MigrationInterface {
           {
             name: "is_done",
             type: "boolean",
-            isNullable: true,
+            default: false,
+          },
+          {
+            name: "is_started",
+            type: "boolean",
+            default: false,
+          },
+          {
+            name: "is_canceled",
+            type: "boolean",
+            default: false,
           },
           {
             name: "created_at",

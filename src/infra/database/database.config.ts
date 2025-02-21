@@ -1,14 +1,12 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { join } from 'path';
-import { config } from 'dotenv';
+import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { join } from "path";
+import { config } from "dotenv";
 config();
-
-console.log(join(__dirname, '..', 'domains', 'pets', 'entities', '*.entity.{js,ts}'));
 
 export class DatabaseConfig {
   static connect(): TypeOrmModuleOptions {
     return {
-      type: 'postgres',
+      type: "postgres",
       host: process.env.POSTGRES_HOST,
       port: Number(process.env.POSTGRES_PORT),
       username: String(process.env.POSTGRES_USER),
@@ -16,9 +14,14 @@ export class DatabaseConfig {
       database: process.env.POSTGRES_DB,
       ssl: getSSLValues(),
       entities: [
-        join(__dirname, '..', '..','domains', 'pets', 'entities', '*.entity.{js,ts}'),
-        join(__dirname, '..', '..', 'domains', 'services', 'entities', '*.entity.{js,ts}'),
-        join(__dirname, '..', '..', 'domains', 'users', 'entities', '*.entity.{js,ts}'),
+        join(
+          __dirname,
+          "..",
+          "..",
+          "architecture",
+          "entities",
+          "*.entity.{js,ts}",
+        ),
       ],
       logging: process.env.DATABASE_LOGGING === "true",
       migrations: [join(__dirname, "migrations", "*{.ts,.js}")],
