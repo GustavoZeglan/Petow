@@ -1,8 +1,9 @@
 import { Controller, Get, HttpStatus, Post } from "@nestjs/common";
-import { AppService } from "./app.service";
-import { DatabaseService } from "./infra/database/database.service";
-import { StatusDTO } from "./architecture/dtos/StatusDTO";
-import { HttpResponseDTO } from "./architecture/dtos/HttpResponseDTO";
+import { AppService } from "@app/app.service";
+import { DatabaseService } from "@app/infra/database/database.service";
+import { StatusDTO } from "@app/architecture/dtos/StatusDTO";
+import { HttpResponseDTO } from "@app/architecture/dtos/HttpResponseDTO";
+import { Public } from "@architecture/decorators/public";
 
 @Controller()
 export class AppController {
@@ -46,6 +47,7 @@ export class AppController {
     );
   }
 
+  @Public()
   @Post("/migrations")
   async runMigrations() {
     const migrations = await this.databaseService.runMigrations();
