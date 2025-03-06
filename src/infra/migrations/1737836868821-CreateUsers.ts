@@ -32,11 +32,6 @@ export class CreateUsers1737836868821 implements MigrationInterface {
             length: "80",
           },
           {
-            name: "gender",
-            enum: ["M", "W", "A"],
-            type: "enum",
-          },
-          {
             name: "cpf",
             type: "varchar",
             isUnique: true,

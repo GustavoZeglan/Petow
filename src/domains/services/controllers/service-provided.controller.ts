@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from "@nestjs/common";
 import { ServiceProvidedService } from "@services/services/serviceProvided.service";
 import { CreateServiceProvidedDTO } from "@services/dtos/CreateServiceProvidedDTO";
@@ -15,19 +16,20 @@ import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
 import { JoiPipe } from "nestjs-joi";
 import { ListServiceProvidedDTO } from "@services/dtos/ListServiceProvidedDTO";
 import { UpdateServiceProvidedDTO } from "@services/dtos/UpdateServiceProvidedDTO";
+import { RequestDTO } from "@architecture/dtos/RequestDTO";
 
 @Controller("service-provided")
 export class ServiceProvidedController {
   constructor(private serviceProvidedService: ServiceProvidedService) {}
 
-  @Post(":providerId")
+  @Post()
   async createServiceProvided(
-    @Param("providerId", ParseIntPipe)
-    providerId: number,
+    @Req() request: RequestDTO,
     @Body(JoiPipe) dto: CreateServiceProvidedDTO,
   ) {
+    const userId = request.user.id;
     const serviceProvided =
-      await this.serviceProvidedService.createServiceProvided(providerId, dto);
+      await this.serviceProvidedService.createServiceProvided(userId, dto);
 
     return new HttpResponseDTO(
       HttpStatus.CREATED,
@@ -36,12 +38,13 @@ export class ServiceProvidedController {
     );
   }
 
-  @Patch(":userId/:id")
+  @Patch(":id")
   async updateServiceProvidedFlags(
-    @Param("userId", ParseIntPipe) userId: number,
+    @Req() request: RequestDTO,
     @Param("id", ParseIntPipe) id: number,
     @Body(JoiPipe) body: UpdateServiceProvidedDTO,
   ) {
+    const userId = request.user.id;
     const serviceProvided =
       await this.serviceProvidedService.updateServiceProvided(userId, id, body);
     return new HttpResponseDTO(
@@ -51,12 +54,12 @@ export class ServiceProvidedController {
     );
   }
 
-  @Get(":userId")
+  @Get()
   async getServiceProvided(
-    @Param("userId", ParseIntPipe)
-    userId: number,
+    @Req() request: RequestDTO,
     @Query(JoiPipe) query: ListServiceProvidedDTO,
   ) {
+    const userId = request.user.id;
     const serviceProvided =
       await this.serviceProvidedService.getServiceProvided(query, userId);
     return new HttpResponseDTO(

@@ -20,13 +20,6 @@ export class CreateServiceOrderDTO {
 
   @JoiSchema(Joi.required())
   @ApiProperty({
-    description: "Customer ID",
-    example: 1,
-  })
-  customerId: number;
-
-  @JoiSchema(Joi.required())
-  @ApiProperty({
     description: "Address ID",
     example: 1,
   })
