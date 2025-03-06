@@ -11,7 +11,6 @@ import {
 } from "typeorm";
 import ServiceOrderEntity from "@architecture/entities/service_order.entity";
 import UserTypeEntity from "@architecture/entities/user_type.entity";
-import { genderEnum } from "@architecture/enums/gender.enum";
 import ProviderServiceEntity from "@architecture/entities/provider_service.entity";
 import AddressEntity from "@architecture/entities/address.entity";
 import PetEntity from "@architecture/entities/pet.entity";
@@ -26,9 +25,6 @@ export default class UserEntity {
 
   @Column({ name: "email", type: "varchar", length: "80", unique: true })
   email: string;
-
-  @Column({ name: "gender", type: "enum", enum: genderEnum })
-  gender: genderEnum;
 
   @Column({ name: "cpf", type: "varchar", length: "11", unique: true })
   cpf: string;

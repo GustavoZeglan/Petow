@@ -21,6 +21,7 @@
       "@architecture/*": ["src/architecture/*"],
       "@infra/*": ["src/infra/*"],
       "@app/*": ["src/*"],
+      "@auth/*": ["src/domains/auth/*"],
       "@users/*": ["src/domains/users/*"],
       "@services/*": ["src/domains/services/*"],
       "@pets/*": ["src/domains/pets/*"],

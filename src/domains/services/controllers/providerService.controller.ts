@@ -9,13 +9,15 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from "@nestjs/common";
 import { ProviderServiceService } from "@services/services/providerService.service";
 import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
 import { CreateProviderServiceDTO } from "@services/dtos/CreateProviderServiceDTO";
 import { JoiPipe } from "nestjs-joi";
-import { UpdateProviderServiceDTO } from "../dtos/UpdateProviderServiceDTO";
-import { ListProviderServiceDTO } from "../dtos/ListProviderServiceDTO";
+import { UpdateProviderServiceDTO } from "@services/dtos/UpdateProviderServiceDTO";
+import { ListProviderServiceDTO } from "@services/dtos/ListProviderServiceDTO";
+import { RequestDTO } from "@architecture/dtos/RequestDTO";
 
 @Controller("provider-service")
 export class ProviderServiceController {
@@ -23,11 +25,12 @@ export class ProviderServiceController {
     private readonly providerServiceService: ProviderServiceService,
   ) {}
 
-  @Get(":userId")
+  @Get()
   async getProviderProviderServices(
-    @Param("userId", ParseIntPipe) userId: number,
+    @Req() request: RequestDTO,    
     @Query(JoiPipe) query: ListProviderServiceDTO,
   ) {
+    const userId = request.user.id;
     Logger.log(`User ${userId} is trying to get provider services`);
     const providerServices =
       await this.providerServiceService.findProviderServicesByUserId(
@@ -42,13 +45,14 @@ export class ProviderServiceController {
     );
   }
 
-  @Patch(":userId/:id")
+  @Patch(":id")
   async updateProviderService(
     @Param("id", ParseIntPipe) id: number,
-    @Param("userId", ParseIntPipe) userId: number,
+    @Req() request: RequestDTO,
     @Body(JoiPipe) dto: UpdateProviderServiceDTO,
   ) {
-    Logger.log(`User ${id} is trying to update a provider`);
+    const userId = request.user.id;
+    Logger.log(`User ${userId} is trying to update a provider`);
     const providerService =
       await this.providerServiceService.updateProviderService(userId, id, dto);
 
@@ -59,17 +63,18 @@ export class ProviderServiceController {
     );
   }
 
-  @Post(":id")
+  @Post()
   async createProviderService(
-    @Param("id", ParseIntPipe) id: number,
+    @Req() request: RequestDTO,
     @Body(JoiPipe) dto: CreateProviderServiceDTO,
   ) {
-    Logger.log(`User ${id} is trying to create a provider service`);
+    const userId = request.user.id;
+    Logger.log(`User ${userId} is trying to create a provider service`);
     const providerService =
       await this.providerServiceService.createProviderService(
         dto.price,
         dto.serviceId,
-        id,
+        userId,
       );
 
     return new HttpResponseDTO(

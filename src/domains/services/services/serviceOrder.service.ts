@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -27,11 +28,11 @@ export class ServiceOrderService {
     private readonly addressRepository: AddressRepository,
     private readonly petRepository: PetRepository,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
-  async createServiceOrder(createServiceOrderDTO: CreateServiceOrderDTO) {
+  async createServiceOrder(userId: number, createServiceOrderDTO: CreateServiceOrderDTO) {
     const { service, customer, provider, address, pets } =
-      await this.validateCreateServiceOrder(createServiceOrderDTO);
+      await this.validateCreateServiceOrder(userId, createServiceOrderDTO);
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -82,6 +83,7 @@ export class ServiceOrderService {
   }
 
   private async validateCreateServiceOrder(
+    userId: number,
     createServiceOrderDTO: CreateServiceOrderDTO,
   ) {
     const service = await this.serviceRepository.findOneBy({
@@ -90,7 +92,7 @@ export class ServiceOrderService {
     if (!service) throw new BadRequestException(`Invalid service ID`);
 
     const customer = await this.userRepository.findOneBy({
-      id: createServiceOrderDTO.customerId,
+      id: userId
     });
     if (!customer) throw new BadRequestException(`Invalid customer ID`);
 
@@ -106,7 +108,7 @@ export class ServiceOrderService {
 
     const pets = await this.petRepository.findByIdsWithUserValidation(
       createServiceOrderDTO.pets,
-      createServiceOrderDTO.customerId,
+      userId,
     );
 
     if (pets.length !== createServiceOrderDTO.pets.length) {
@@ -136,12 +138,20 @@ export class ServiceOrderService {
 
   async updateServiceOrderFlags(
     serviceOrderId: number,
+    userId: number,
     updateServiceOrderDTO: UpdateServiceOrderDTO,
   ) {
-    const serviceOrder = await this.serviceOrderRepository.findOneBy({
-      id: serviceOrderId,
+    const serviceOrder = await this.serviceOrderRepository.findOne({
+      where: { id: serviceOrderId },
+      relations: { customer: true, provider: true }
     });
     if (!serviceOrder) throw new NotFoundException("Service Order not found");
+
+    if (![serviceOrder.customer.id, serviceOrder.provider.id].includes(userId)) {
+      throw new ForbiddenException(
+        "You are not allowed to update this service order",
+      );
+    }
 
     const serviceOrderToUpdate = this.serviceOrderRepository.create({
       ...serviceOrder,

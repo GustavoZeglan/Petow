@@ -9,6 +9,7 @@ import { ConfigModule } from "@nestjs/config";
 import { PetsModule } from "@pets/pets.module";
 import { ServicesModule } from "@services/services.module";
 import { UsersModule } from "@users/users.module";
+import { AuthModule } from '@auth/auth.module';
 dotenv.config();
 
 @Module({
@@ -21,6 +22,7 @@ dotenv.config();
     PetsModule,
     ServicesModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
