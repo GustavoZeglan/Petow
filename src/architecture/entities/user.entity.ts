@@ -40,7 +40,6 @@ export default class UserEntity {
   type: UserTypeEntity;
 
   @OneToMany(() => AddressEntity, (address) => address.user)
-  @JoinColumn({ name: "user_id" })
   address: AddressEntity[];
 
   @OneToMany(() => ServiceOrderEntity, (serviceOrder) => serviceOrder.customer)

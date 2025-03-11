@@ -1,10 +1,12 @@
 import UserEntity from '@architecture/entities/user.entity';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDTO } from './dtos/CreateUserDTO';
 import UserTypeEntity from '@architecture/entities/user_type.entity';
+import { CreateAddressDTO } from '@users/dtos/CreateAddressDTO';
+import AddressEntity from '@architecture/entities/address.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +15,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(UserTypeEntity) private readonly userTypeRepository: Repository<UserTypeEntity>,
+    @InjectRepository(AddressEntity) private readonly addressRepository: Repository<AddressEntity>,
   ) { }
 
   async create(user: CreateUserDTO): Promise<UserEntity> {
@@ -24,24 +27,64 @@ export class UsersService {
     }
 
     const hash = await bcrypt.hash(user.password, this.saltRounds);
-    
+
     const userType = await this.userTypeRepository.findOne({ where: { id: user.userType } });
     if (!userType) {
       Logger.error('User type not found');
       throw new BadRequestException('User type not found');
     }
 
-    const userToCreate = this.userRepository.create({ 
+    const userToCreate = this.userRepository.create({
       name: user.name,
       cpf: user.cpf,
       email: user.email,
       phone: user.phone,
-      password: hash,  
+      password: hash,
       type: userType,
     });
 
     return (await this.userRepository.save(userToCreate)).toModel();
-  }  
+  }
+
+  async addAddress(userId: number, dto: CreateAddressDTO) {
+    const user = await this.findOne(userId);
+    if (!user) {
+      Logger.error('User not found');
+      throw new BadRequestException('User not found');
+    }
+
+    const addressToCreate = this.addressRepository.create({
+      ...dto,
+      user,
+    });
+
+    const address = await this.addressRepository.save(addressToCreate);
+    if (!address) {
+      Logger.error('Address not created');
+      throw new InternalServerErrorException('An error occurred while creating the address');
+    }
+    address.toModel();
+
+    return address;
+  }
+
+  async getAddress(userId: number) {
+    const address = await this.addressRepository.find({ where: { user: { id: userId } } });
+    for (const addressItem of address) {
+      addressItem.toModel();
+    }
+    return address;
+  }
+
+  async deleteAddress(userId: number, addressId: number) {
+    const address = await this.addressRepository.findOne({ where: { id: addressId, user: { id: userId } } });
+    if (!address) {
+      Logger.error('Address not found');
+      throw new BadRequestException('Address not found');
+    }
+  
+    await this.addressRepository.delete(addressId);
+  }
 
   async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
