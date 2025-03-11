@@ -12,6 +12,8 @@ import {
 import ServiceOrderPetEntity from "@architecture/entities/service_order_pet.entity";
 import UserEntity from "@architecture/entities/user.entity";
 import BreedEntity from "@architecture/entities/breed.entity";
+import SpeciesEntity from "./species.entity";
+import { PetSize } from "@architecture/enums/pet-size.enum";
 
 @Entity("pets")
 export default class PetEntity {
@@ -19,7 +21,7 @@ export default class PetEntity {
   id: number;
 
   @Column({ name: "name", type: "varchar", length: "255" })
-  name: string;
+  petName: string;
 
   @Column({ name: "birthday", type: "date" })
   birthday: Date;
@@ -41,6 +43,13 @@ export default class PetEntity {
   @JoinColumn({ name: "breed_id" })
   breed: BreedEntity;
 
+  @ManyToOne(() => SpeciesEntity, (specie) => specie.pets)
+  @JoinColumn({ name: "specie_id" })
+  specie: SpeciesEntity;
+
+  @Column({ name: "size", type: "enum", enum: PetSize })
+  size: PetSize;
+
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;
 
@@ -52,6 +61,9 @@ export default class PetEntity {
 
   toModel<T extends Partial<PetEntity>>() {
     return Object.assign(this, {
+      user: this?.user?.toModel(),
+      breed: this?.breed?.toModel(),
+      specie: this?.specie?.toModel(),
       createdAt: undefined,
       updatedAt: undefined,
       deletedAt: undefined,

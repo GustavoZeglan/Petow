@@ -3,25 +3,22 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import PetEntity from "@architecture/entities/pet.entity";
+import SpeciesEntity from "@architecture/entities/species.entity";
 
 @Entity("breed")
 export default class BreedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "api_id", type: "int4" })
-  apiId: number;
-
   @Column({ name: "name", type: "varchar", length: "255" })
   name: string;
-
-  @Column({ name: "breed_for", type: "varchar", length: "255" })
-  breedFor: string;
 
   @Column({ name: "temperament", type: "text" })
   temperament: string;
@@ -32,11 +29,12 @@ export default class BreedEntity {
   @Column({ name: "weight", type: "varchar", length: "50" })
   weight: string;
 
-  @Column({ name: "height", type: "varchar", length: "50" })
-  height: string;
-
   @OneToMany(() => PetEntity, (pets) => pets.breed)
   pets: PetEntity[];
+
+  @ManyToOne(() => SpeciesEntity, (specie) => specie.breeds)
+  @JoinColumn({ name: "specie_id" })
+  specie: SpeciesEntity;
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;
@@ -49,6 +47,7 @@ export default class BreedEntity {
 
   toModel<T extends Partial<BreedEntity>>() {
     return Object.assign(this, {
+      specie: this?.specie?.toModel(),
       createdAt: undefined,
       updatedAt: undefined,
       deletedAt: undefined,
