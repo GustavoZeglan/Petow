@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -16,32 +17,20 @@ export default class AddressEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "address_type", type: "varchar", length: "100" })
-  addressType: string;
-
   @Column({ name: "street", type: "varchar", length: "255" })
   street: string;
 
   @Column({ name: "number", type: "varchar", length: "10" })
   number: string;
 
-  @Column({ name: "complement", type: "varchar", length: "255" })
-  complement: string;
-
-  @Column({ name: "neighborhood", type: "varchar", length: "100" })
-  neighborhood: string;
-
   @Column({ name: "city", type: "varchar", length: "100" })
   city: string;
 
-  @Column({ name: "state", type: "varchar", length: "10" })
+  @Column({ name: "state", type: "varchar", length: "20" })
   state: string;
 
   @Column({ name: "zip_code", type: "varchar", length: "10" })
-  zipCode: string;
-
-  @Column({ name: "country", type: "varchar", length: "100" })
-  country: string;
+  zipcode: string;
 
   @Column({ name: "latitude", type: "decimal", precision: 10, scale: 7 })
   latitude: number;
@@ -52,8 +41,8 @@ export default class AddressEntity {
   @Column({ name: "place_id", type: "varchar", length: "255" })
   placeId: string;
 
-  @OneToMany(() => UserEntity, (user) => user.address)
-  @JoinColumn({ name: "user_id" })
+  @ManyToOne(() => UserEntity, (user) => user.address)
+  @JoinColumn({ name: "user_id" }) 
   user: UserEntity;
 
   @OneToMany(() => ServiceOrderEntity, (serviceOrders) => serviceOrders.address)
@@ -70,6 +59,7 @@ export default class AddressEntity {
 
   toModel<T extends Partial<AddressEntity>>() {
     return Object.assign(this, {
+      user: this.user?.toModel(),
       createdAt: undefined,
       updatedAt: undefined,
       deletedAt: undefined,
