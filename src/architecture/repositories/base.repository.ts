@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import {
   EntityManager,
   EntityTarget,
+  FindOptionsRelations,
   FindOptionsSelect,
   FindOptionsWhere,
   Like,
@@ -55,8 +56,20 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
 
   async findMany(query: FindManyOptions<T>, userId?: number) {
     Logger.log(`Find many with query: ${JSON.stringify(query)}`);
-    const search: FindOptionsWhere<T> = query.search
-      ? this.formatSearch(query.search as FindOptionsWhere<T>, userId)
+
+    if (userId) {
+      query.search = query.search || {};
+      query.search["user"] = { id: userId };
+    }
+
+    const search: FindOptionsWhere<T> = (query.search || userId)
+      ? this.formatSearch(query.search as FindOptionsWhere<T>)
+      : {};
+
+    const relations: FindOptionsRelations<T> = query.includes
+      ? Array.isArray(query.includes)
+        ? query.includes.reduce((acc, include) => ({ ...acc, [include]: true }), {})
+        : { [query.includes]: true }
       : {};
 
     const whereFormatted = { ...query.filter, ...search };
@@ -65,7 +78,7 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
       select: query.select,
       take: query.pageSize,
       skip: query.page,
-      relations: query.includes?.map(String),
+      relations: relations,
       where: whereFormatted,
     });
   }

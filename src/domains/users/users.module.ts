@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import UserEntity from "@architecture/entities/user.entity";
 import AddressEntity from "@architecture/entities/address.entity";
 import UserTypeEntity from "@architecture/entities/user_type.entity";
@@ -13,7 +13,7 @@ import { UsersController } from './users.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, UserTypeEntity, AddressEntity]),
-    PetsModule,
+    forwardRef(() =>  PetsModule),
   ],
   controllers: [UsersController],
   providers: [BaseRepository, UserRepository, AddressRepository, UsersService],
