@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import BreedEntity from "@architecture/entities/breed.entity";
 import PetEntity from "@architecture/entities/pet.entity";
 
@@ -30,7 +38,6 @@ export default class SpeciesEntity {
       createdAt: undefined,
       updatedAt: undefined,
       deletedAt: undefined,
-    })
-  };
-  
+    });
+  }
 }

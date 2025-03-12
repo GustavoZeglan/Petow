@@ -11,7 +11,7 @@ import {
 } from "typeorm";
 import ServiceEntity from "@architecture/entities/service.entity";
 import UserEntity from "@architecture/entities/user.entity";
-import { ServiceProvidedEntity } from "@architecture/entities/service_provided.entity";
+import ServiceProvidedEntity from "@architecture/entities/service_provided.entity";
 
 @Entity("provider_service")
 export default class ProviderServiceEntity {

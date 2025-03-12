@@ -26,12 +26,10 @@ export class ServiceOrderController {
   @Post()
   async createOrderService(
     @Body(JoiPipe) createServiceOrderDTO: CreateServiceOrderDTO,
-    @Req() request: RequestDTO
+    @Req() request: RequestDTO,
   ) {
     const userId = request.user.id;
-    Logger.log(
-      `User ${userId} is trying to create a Service Order`,
-    );
+    Logger.log(`User ${userId} is trying to create a Service Order`);
     const serviceOrder = await this.serviceOrderService.createServiceOrder(
       userId,
       createServiceOrderDTO,

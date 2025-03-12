@@ -7,7 +7,8 @@ import SpeciesEntity from "@architecture/entities/species.entity";
 @Injectable()
 export default class SpeciesRepository extends BaseRepository<SpeciesEntity> {
   constructor(
-    @InjectRepository(SpeciesEntity) private repository: Repository<SpeciesEntity>,
+    @InjectRepository(SpeciesEntity)
+    private repository: Repository<SpeciesEntity>,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);
   }

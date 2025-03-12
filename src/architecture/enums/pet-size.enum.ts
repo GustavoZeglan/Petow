@@ -1,5 +1,5 @@
 export enum PetSize {
-    SMALL = 'small',
-    MEDIUM = 'medium',
-    BIG = 'big',
+  SMALL = "small",
+  MEDIUM = "medium",
+  BIG = "big",
 }

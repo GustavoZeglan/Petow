@@ -1,37 +1,48 @@
-import UserEntity from '@architecture/entities/user.entity';
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm/repository/Repository';
-import * as bcrypt from 'bcryptjs';
-import { CreateUserDTO } from './dtos/CreateUserDTO';
-import UserTypeEntity from '@architecture/entities/user_type.entity';
-import { CreateAddressDTO } from '@users/dtos/CreateAddressDTO';
-import AddressEntity from '@architecture/entities/address.entity';
+import UserEntity from "@architecture/entities/user.entity";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm/repository/Repository";
+import * as bcrypt from "bcryptjs";
+import { CreateUserDTO } from "./dtos/CreateUserDTO";
+import UserTypeEntity from "@architecture/entities/user_type.entity";
+import { CreateAddressDTO } from "@users/dtos/CreateAddressDTO";
+import AddressEntity from "@architecture/entities/address.entity";
 
 @Injectable()
 export class UsersService {
   saltRounds = 10;
 
   constructor(
-    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(UserTypeEntity) private readonly userTypeRepository: Repository<UserTypeEntity>,
-    @InjectRepository(AddressEntity) private readonly addressRepository: Repository<AddressEntity>,
-  ) { }
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserTypeEntity)
+    private readonly userTypeRepository: Repository<UserTypeEntity>,
+    @InjectRepository(AddressEntity)
+    private readonly addressRepository: Repository<AddressEntity>,
+  ) {}
 
   async create(user: CreateUserDTO): Promise<UserEntity> {
-
-    const userExists = await this.userRepository.findOne({ where: { email: user.email } });
+    const userExists = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
     if (userExists) {
-      Logger.error('User already exists');
-      throw new BadRequestException('Invalid email');
+      Logger.error("User already exists");
+      throw new BadRequestException("Invalid email");
     }
 
     const hash = await bcrypt.hash(user.password, this.saltRounds);
 
-    const userType = await this.userTypeRepository.findOne({ where: { id: user.userType } });
+    const userType = await this.userTypeRepository.findOne({
+      where: { id: user.userType },
+    });
     if (!userType) {
-      Logger.error('User type not found');
-      throw new BadRequestException('User type not found');
+      Logger.error("User type not found");
+      throw new BadRequestException("User type not found");
     }
 
     const userToCreate = this.userRepository.create({
@@ -49,8 +60,8 @@ export class UsersService {
   async addAddress(userId: number, dto: CreateAddressDTO) {
     const user = await this.findOne(userId);
     if (!user) {
-      Logger.error('User not found');
-      throw new BadRequestException('User not found');
+      Logger.error("User not found");
+      throw new BadRequestException("User not found");
     }
 
     const addressToCreate = this.addressRepository.create({
@@ -60,8 +71,10 @@ export class UsersService {
 
     const address = await this.addressRepository.save(addressToCreate);
     if (!address) {
-      Logger.error('Address not created');
-      throw new InternalServerErrorException('An error occurred while creating the address');
+      Logger.error("Address not created");
+      throw new InternalServerErrorException(
+        "An error occurred while creating the address",
+      );
     }
     address.toModel();
 
@@ -69,7 +82,9 @@ export class UsersService {
   }
 
   async getAddress(userId: number) {
-    const address = await this.addressRepository.find({ where: { user: { id: userId } } });
+    const address = await this.addressRepository.find({
+      where: { user: { id: userId } },
+    });
     for (const addressItem of address) {
       addressItem.toModel();
     }
@@ -77,12 +92,14 @@ export class UsersService {
   }
 
   async deleteAddress(userId: number, addressId: number) {
-    const address = await this.addressRepository.findOne({ where: { id: addressId, user: { id: userId } } });
+    const address = await this.addressRepository.findOne({
+      where: { id: addressId, user: { id: userId } },
+    });
     if (!address) {
-      Logger.error('Address not found');
-      throw new BadRequestException('Address not found');
+      Logger.error("Address not found");
+      throw new BadRequestException("Address not found");
     }
-  
+
     await this.addressRepository.delete(addressId);
   }
 
@@ -95,7 +112,9 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<UserEntity | null> {
-    return await this.userRepository.findOne({ where: { email }, relations: ['type'] });
+    return await this.userRepository.findOne({
+      where: { email },
+      relations: ["type"],
+    });
   }
-
 }

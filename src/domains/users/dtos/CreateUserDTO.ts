@@ -42,8 +42,7 @@ export class CreateUserDTO {
   @JoiSchema(UserSchema.userType.required())
   @ApiProperty({
     description: "User type",
-    example: '1 for user and 2 for tutor',
+    example: "1 for user and 2 for tutor",
   })
   userType: number;
-
 }

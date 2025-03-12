@@ -27,7 +27,7 @@ export class ProviderServiceController {
 
   @Get()
   async getProviderProviderServices(
-    @Req() request: RequestDTO,    
+    @Req() request: RequestDTO,
     @Query(JoiPipe) query: ListProviderServiceDTO,
   ) {
     const userId = request.user.id;

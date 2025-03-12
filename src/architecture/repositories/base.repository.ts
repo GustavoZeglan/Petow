@@ -62,13 +62,17 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
       query.search["user"] = { id: userId };
     }
 
-    const search: FindOptionsWhere<T> = (query.search || userId)
-      ? this.formatSearch(query.search as FindOptionsWhere<T>)
-      : {};
+    const search: FindOptionsWhere<T> =
+      query.search || userId
+        ? this.formatSearch(query.search as FindOptionsWhere<T>)
+        : {};
 
     const relations: FindOptionsRelations<T> = query.includes
       ? Array.isArray(query.includes)
-        ? query.includes.reduce((acc, include) => ({ ...acc, [include]: true }), {})
+        ? query.includes.reduce(
+            (acc, include) => ({ ...acc, [include]: true }),
+            {},
+          )
         : { [query.includes]: true }
       : {};
 

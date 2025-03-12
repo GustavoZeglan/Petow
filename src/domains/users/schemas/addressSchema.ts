@@ -14,10 +14,10 @@ export class AddressSchema {
   static placeId = CommonSchema.text;
 
   static includes = Joi.array()
-  .items(Joi.string().valid(...AddressIncludeValues))
-  .single()
-  .optional();
-  
+    .items(Joi.string().valid(...AddressIncludeValues))
+    .single()
+    .optional();
+
   static order = Joi.object({
     createdAt: CommonSchema.order,
   });
@@ -37,5 +37,4 @@ export class AddressSchema {
     latitude: CommonSchema.number,
     longitude: CommonSchema.number,
   });
-
 }

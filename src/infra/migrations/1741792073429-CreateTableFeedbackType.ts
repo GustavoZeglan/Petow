@@ -1,19 +1,16 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableForeignKey,
-} from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateTableSpecies1741710215552 implements MigrationInterface {
+export class CreateTableFeedbackType1741792073429
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "species",
+        name: "feedback_type",
         columns: [
           {
             name: "id",
-            type: "integer",
+            type: "int",
             isPrimary: true,
             isGenerated: true,
             generationStrategy: "increment",
@@ -21,8 +18,7 @@ export class CreateTableSpecies1741710215552 implements MigrationInterface {
           {
             name: "name",
             type: "varchar",
-            length: "255",
-            isUnique: true,
+            isNullable: false,
           },
           {
             name: "created_at",
@@ -42,19 +38,9 @@ export class CreateTableSpecies1741710215552 implements MigrationInterface {
         ],
       }),
     );
-
-    await queryRunner.createForeignKey(
-      "pets",
-      new TableForeignKey({
-        columnNames: ["specie_id"],
-        referencedColumnNames: ["id"],
-        referencedTableName: "species",
-        onDelete: "SET NULL",
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("species");
+    await queryRunner.dropTable("feedback_type");
   }
 }

@@ -14,6 +14,7 @@ import UserTypeEntity from "@architecture/entities/user_type.entity";
 import ProviderServiceEntity from "@architecture/entities/provider_service.entity";
 import AddressEntity from "@architecture/entities/address.entity";
 import PetEntity from "@architecture/entities/pet.entity";
+import FeedbackEntity from "@architecture/entities/feedback.entity";
 
 @Entity("users")
 export default class UserEntity {
@@ -43,11 +44,9 @@ export default class UserEntity {
   address: AddressEntity[];
 
   @OneToMany(() => ServiceOrderEntity, (serviceOrder) => serviceOrder.customer)
-  @JoinColumn({ name: "user_id" })
   serviceOrderCustomer: ServiceOrderEntity[];
 
   @OneToMany(() => ServiceOrderEntity, (serviceOrder) => serviceOrder.provider)
-  @JoinColumn({ name: "user_id" })
   serviceOrderProvider: ServiceOrderEntity[];
 
   @OneToMany(() => PetEntity, (pets) => pets.user)
@@ -60,6 +59,12 @@ export default class UserEntity {
   )
   @JoinColumn({ name: "provider_id" })
   providerServices: ProviderServiceEntity[];
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.sender)
+  feedbacksSender: FeedbackEntity[];
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.receiver)
+  feedbacksReceiver: FeedbackEntity[];
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;

@@ -1,13 +1,9 @@
 import * as Joi from "joi";
 import { CommonSchema } from "@architecture/schemas/CommonSchema";
 
-const BreedIncludeValues = [
-  "specie",
-  "pets",
-] as const;
+const BreedIncludeValues = ["specie", "pets"] as const;
 
 export class BreedSchema {
-
   static order = Joi.object({
     createdAt: CommonSchema.order,
   });

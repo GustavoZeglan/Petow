@@ -25,6 +25,7 @@
       "@users/*": ["src/domains/users/*"],
       "@services/*": ["src/domains/services/*"],
       "@pets/*": ["src/domains/pets/*"],
+      "@feedbacks/*": ["src/domains/feedbacks/*"],
     }
   }
 }

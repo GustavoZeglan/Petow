@@ -12,7 +12,9 @@ const cpfSchema = Joi.string().custom((value, helpers) => {
 }, "CPF Validation");
 
 const phoneRegex = /^(?:\+55)?(?:\d{2})?\d{8,9}$/;
-const phoneSchema = Joi.string().pattern(phoneRegex).message("Phone Number is invalid");
+const phoneSchema = Joi.string()
+  .pattern(phoneRegex)
+  .message("Phone Number is invalid");
 
 export class UserSchema {
   static userName = CommonSchema.text;
@@ -23,10 +25,10 @@ export class UserSchema {
   static userType = CommonSchema.number.valid(1, 2);
 
   static includes = Joi.array()
-  .items(Joi.string().valid(...UserIncludeValues))
-  .single()
-  .optional();
-  
+    .items(Joi.string().valid(...UserIncludeValues))
+    .single()
+    .optional();
+
   static order = Joi.object({
     createdAt: CommonSchema.order,
   });
@@ -40,5 +42,4 @@ export class UserSchema {
     userName: CommonSchema.text,
     email: CommonSchema.text.email(),
   });
-
 }
