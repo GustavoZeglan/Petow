@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -54,14 +55,22 @@ export class ServiceProvidedController {
     );
   }
 
-  @Get()
-  async getServiceProvided(
+  @Get(":id")
+  async getServiceProvidedById(
+    @Param("id", ParseIntPipe) id: number,
     @Req() request: RequestDTO,
     @Query(JoiPipe) query: ListServiceProvidedDTO,
   ) {
     const userId = request.user.id;
+    Logger.log(
+      `User ${userId} is trying to get service provided with id ${id}`,
+    );
     const serviceProvided =
-      await this.serviceProvidedService.getServiceProvided(query, userId);
+      await this.serviceProvidedService.getServiceProvidedById(
+        query,
+        id,
+        userId,
+      );
     return new HttpResponseDTO(
       HttpStatus.OK,
       "Service Provided retrieved successfully",

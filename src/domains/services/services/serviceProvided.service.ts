@@ -102,18 +102,48 @@ export class ServiceProvidedService {
     return updatedServiceProvided.toModel();
   }
 
-  async getServiceProvided(query: ListServiceProvidedDTO, userId: number) {
-    const servicesProvided = await this.serviceProvidedRepository.findMany(
-      query,
-      userId,
-    );
+  async getServiceProvidedById(
+    query: ListServiceProvidedDTO,
+    id: number,
+    userId: number,
+  ) {
+    if (!query.includes) {
+      query.includes = [];
+    }
+
+    if (!query.includes.includes("serviceOrder")) {
+      query.includes.push("serviceOrder");
+    }
+
+    const servicesProvided =
+      await this.serviceProvidedRepository.findOneWithOptions(id, query);
 
     if (!servicesProvided) {
       Logger.error("Services Provided not found");
       throw new BadRequestException("Services Provided not found");
     }
 
-    servicesProvided.map((servicesProvided) => servicesProvided.toModel());
+    const serviceOrder = await this.serviceOrderRepository.findOne({
+      where: { id: servicesProvided.serviceOrder.id },
+      relations: ["customer", "provider"],
+    });
+
+    if (!serviceOrder) {
+      Logger.error("Service Order not found");
+      throw new BadRequestException("Service Order not found");
+    }
+
+    const isAuthorized = [
+      serviceOrder.customer?.id,
+      serviceOrder.provider?.id,
+    ].includes(userId);
+
+    if (!isAuthorized) {
+      Logger.error("User is not the customer or provider");
+      throw new BadRequestException("User is not the customer or provider");
+    }
+
+    servicesProvided.toModel();
 
     return servicesProvided;
   }
