@@ -13,15 +13,26 @@ export default class FeedbackTypeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 100 })
+  @Column({ name: "name", type: "varchar", length: 100 })
   type: string;
 
   @OneToMany(() => FeedbackEntity, (feedback) => feedback.feedbackType)
   feedbacks: FeedbackEntity[];
 
-  @CreateDateColumn({ type: "timestamp" })
+  @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: "timestamp" })
+  @UpdateDateColumn({ name: "updated_at", type: "timestamp" })
   updatedAt: Date;
+
+  toModel<T extends Partial<FeedbackTypeEntity>>() {
+    return Object.assign(this, {
+      feedbacks: this?.feedbacks?.map((feedback) =>
+        feedback.toModel<FeedbackEntity>(),
+      ),
+      createdAt: undefined,
+      updatedAt: undefined,
+      deletedAt: undefined,
+    });
+  }
 }

@@ -25,18 +25,18 @@ export class ProviderServiceController {
     private readonly providerServiceService: ProviderServiceService,
   ) {}
 
-  @Get()
-  async getProviderProviderServices(
+  @Get(":id")
+  async getProviderService(
     @Req() request: RequestDTO,
     @Query(JoiPipe) query: ListProviderServiceDTO,
+    @Param("id", ParseIntPipe) id: number,
   ) {
     const userId = request.user.id;
-    Logger.log(`User ${userId} is trying to get provider services`);
+    Logger.log(
+      `User ${userId} is trying to get provider service with id ${id}`,
+    );
     const providerServices =
-      await this.providerServiceService.findProviderServicesByUserId(
-        userId,
-        query,
-      );
+      await this.providerServiceService.findProviderServicesById(id, query);
 
     return new HttpResponseDTO(
       HttpStatus.OK,

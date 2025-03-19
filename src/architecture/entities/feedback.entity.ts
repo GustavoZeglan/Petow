@@ -16,7 +16,7 @@ import PetEntity from "@architecture/entities/pet.entity";
 @Entity("feedback")
 export default class FeedbackEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ type: "text" })
   description: string;
@@ -47,12 +47,25 @@ export default class FeedbackEntity {
   @JoinColumn({ name: "pet_id" })
   pet: PetEntity;
 
-  @CreateDateColumn({ type: "timestamp" })
+  @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: "timestamp" })
+  @UpdateDateColumn({ name: "updated_at", type: "timestamp" })
   updatedAt: Date;
 
-  @DeleteDateColumn({ type: "timestamp" })
+  @DeleteDateColumn({ name: "deleted_at", type: "timestamp" })
   deletedAt: Date;
+
+  toModel<T extends Partial<FeedbackEntity>>() {
+    return Object.assign(this, {
+      sender: this?.sender?.toModel(),
+      receiver: this?.receiver?.toModel(),
+      feedbackType: this?.feedbackType?.toModel(),
+      serviceProvided: this?.serviceProvided?.toModel(),
+      pet: this?.pet?.toModel(),
+      createdAt: undefined,
+      updatedAt: undefined,
+      deletedAt: undefined,
+    });
+  }
 }
