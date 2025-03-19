@@ -12,8 +12,9 @@ import {
 import ServiceOrderPetEntity from "@architecture/entities/service_order_pet.entity";
 import UserEntity from "@architecture/entities/user.entity";
 import BreedEntity from "@architecture/entities/breed.entity";
-import SpeciesEntity from "./species.entity";
+import SpeciesEntity from "@architecture/entities/species.entity";
 import { PetSize } from "@architecture/enums/pet-size.enum";
+import FeedbackEntity from "@architecture/entities/feedback.entity";
 
 @Entity("pets")
 export default class PetEntity {
@@ -49,6 +50,9 @@ export default class PetEntity {
 
   @Column({ name: "size", type: "enum", enum: PetSize })
   size: PetSize;
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.pet)
+  feedbacks: FeedbackEntity[];
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;

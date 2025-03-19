@@ -28,9 +28,12 @@ export class ServiceOrderService {
     private readonly addressRepository: AddressRepository,
     private readonly petRepository: PetRepository,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
-  async createServiceOrder(userId: number, createServiceOrderDTO: CreateServiceOrderDTO) {
+  async createServiceOrder(
+    userId: number,
+    createServiceOrderDTO: CreateServiceOrderDTO,
+  ) {
     const { service, customer, provider, address, pets } =
       await this.validateCreateServiceOrder(userId, createServiceOrderDTO);
 
@@ -92,7 +95,7 @@ export class ServiceOrderService {
     if (!service) throw new BadRequestException(`Invalid service ID`);
 
     const customer = await this.userRepository.findOneBy({
-      id: userId
+      id: userId,
     });
     if (!customer) throw new BadRequestException(`Invalid customer ID`);
 
@@ -143,11 +146,13 @@ export class ServiceOrderService {
   ) {
     const serviceOrder = await this.serviceOrderRepository.findOne({
       where: { id: serviceOrderId },
-      relations: { customer: true, provider: true }
+      relations: { customer: true, provider: true },
     });
     if (!serviceOrder) throw new NotFoundException("Service Order not found");
 
-    if (![serviceOrder.customer.id, serviceOrder.provider.id].includes(userId)) {
+    if (
+      ![serviceOrder.customer.id, serviceOrder.provider.id].includes(userId)
+    ) {
       throw new ForbiddenException(
         "You are not allowed to update this service order",
       );
@@ -163,15 +168,20 @@ export class ServiceOrderService {
     return updatedServiceOrder.toModel();
   }
 
-  async getServiceOrdersOfUser(query: ListServiceOrderDTO, userId: number) {
+  async getServiceOrdersOfUser(
+    query: ListServiceOrderDTO,
+    userId: number,
+    role?: string,
+  ) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
     if (!user) throw new NotFoundException("User not found");
 
-    const serviceOrders = await this.serviceOrderRepository.findMany(
+    const serviceOrders = await this.serviceOrderRepository.findServiceOrders(
       query,
       userId,
+      role,
     );
 
     for (const serviceOrder of serviceOrders) {

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ServiceProvidedController } from "@services/controllers/service-provided.controller";
+import { ServiceProvidedController } from "@app/domains/services/controllers/serviceProvided.controller";
 
 describe("ServiceProvidedController", () => {
   let controller: ServiceProvidedController;

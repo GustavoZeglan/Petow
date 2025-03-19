@@ -13,7 +13,7 @@ import UserEntity from "@architecture/entities/user.entity";
 import ServiceEntity from "@architecture/entities/service.entity";
 import AddressEntity from "@architecture/entities/address.entity";
 import ServiceOrderPetEntity from "@architecture/entities/service_order_pet.entity";
-import { ServiceProvidedEntity } from "@architecture/entities/service_provided.entity";
+import ServiceProvidedEntity from "@architecture/entities/service_provided.entity";
 
 @Entity("service_order")
 export default class ServiceOrderEntity {

@@ -18,8 +18,8 @@ import { UsersModule } from "@users/users.module";
 import { PetsModule } from "@pets/pets.module";
 import { ServiceProvidedService } from "@services/services/serviceProvided.service";
 import ServiceProvidedRepository from "@architecture/repositories/service_provided.repository";
-import { ServiceProvidedEntity } from "@architecture/entities/service_provided.entity";
-import { ServiceProvidedController } from "@services/controllers/service-provided.controller";
+import ServiceProvidedEntity from "@architecture/entities/service_provided.entity";
+import { ServiceProvidedController } from "@app/domains/services/controllers/serviceProvided.controller";
 
 @Module({
   imports: [
@@ -57,6 +57,7 @@ import { ServiceProvidedController } from "@services/controllers/service-provide
     ServiceRepository,
     ServiceOrderRepository,
     ProviderServiceRepository,
+    ServiceProvidedRepository,
   ],
 })
 export class ServicesModule {}

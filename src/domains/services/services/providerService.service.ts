@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   Logger,
+  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import ProviderServiceRepository from "@architecture/repositories/provider_service.repository";
@@ -18,22 +19,20 @@ export class ProviderServiceService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async findProviderServicesByUserId(
-    userId: number,
-    query: ListProviderServiceDTO,
-  ) {
-    const providerServices = await this.providerServiceRepository.findMany(
-      query,
-      userId,
-    );
+  async findProviderServicesById(id: number, query: ListProviderServiceDTO) {
+    const providerService =
+      await this.providerServiceRepository.findOneWithOptions(id, query);
 
-    Logger.log(`Found ${providerServices.length} provider services`);
-
-    for (const providerService of providerServices) {
-      providerService.toModel();
+    if (!providerService) {
+      Logger.error(`Provider service with id ${id} not found`);
+      throw new NotFoundException(`Provider service with id ${id} not found`);
     }
 
-    return providerServices;
+    Logger.log(`Found ${providerService.id} provider service`);
+
+    providerService.toModel();
+
+    return providerService;
   }
 
   async updateProviderService(

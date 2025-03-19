@@ -42,5 +42,4 @@ export class CreatePetDTO {
     example: 1,
   })
   breedId: number;
-
 }

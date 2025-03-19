@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { JoiSchema, JoiSchemaOptions } from "nestjs-joi";
 import { FindOptionsOrder, FindOptionsSelect, FindOptionsWhere } from "typeorm";
 import { CommonSchema } from "@architecture/schemas/CommonSchema";
-import { ServiceProvidedEntity } from "@architecture/entities/service_provided.entity";
+import ServiceProvidedEntity from "@architecture/entities/service_provided.entity";
 import { ServiceProvidedSchema } from "@services/schemas/serviceProvidedSchema";
 
 @JoiSchemaOptions({ allowUnknown: false })

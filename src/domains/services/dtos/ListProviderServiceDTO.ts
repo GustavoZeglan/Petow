@@ -7,14 +7,6 @@ import ProviderServiceEntity from "@architecture/entities/provider_service.entit
 
 @JoiSchemaOptions({ allowUnknown: false })
 export class ListProviderServiceDTO {
-  @JoiSchema(ProviderServiceSchema.order.optional())
-  @ApiProperty({ description: "Colunas de ordenação", required: false })
-  order?: FindOptionsOrder<ProviderServiceEntity>;
-
-  @JoiSchema(ProviderServiceSchema.filter.optional())
-  @ApiProperty({ description: "Condições para seleção", required: false })
-  filter?: FindOptionsWhere<ProviderServiceEntity>;
-
   @JoiSchema(ProviderServiceSchema.select.optional())
   @ApiProperty({
     description: "Colunas que serão selecionadas",
@@ -24,12 +16,4 @@ export class ListProviderServiceDTO {
 
   @JoiSchema(ProviderServiceSchema.includes.optional())
   includes?: string[];
-
-  @ApiProperty({ description: "Número da página", required: false })
-  @JoiSchema(CommonSchema.page.optional())
-  page?: number;
-
-  @ApiProperty({ description: "Tamanho da página", required: false })
-  @JoiSchema(CommonSchema.pageSize.optional())
-  pageSize?: number;
 }

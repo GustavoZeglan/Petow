@@ -42,7 +42,7 @@ export default class AddressEntity {
   placeId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.address)
-  @JoinColumn({ name: "user_id" }) 
+  @JoinColumn({ name: "user_id" })
   user: UserEntity;
 
   @OneToMany(() => ServiceOrderEntity, (serviceOrders) => serviceOrders.address)

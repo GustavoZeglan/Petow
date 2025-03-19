@@ -2,11 +2,7 @@ import * as Joi from "joi";
 import { CommonSchema } from "@architecture/schemas/CommonSchema";
 import { PetSize } from "@architecture/enums/pet-size.enum";
 
-const PetIncludeValues = [
-  "user",
-  "breed",
-  "specie",
-] as const;
+const PetIncludeValues = ["user", "breed", "specie"] as const;
 
 export class PetSchema {
   static petName = CommonSchema.text;

@@ -4,9 +4,18 @@ import { FindOptionsOrder, FindOptionsSelect, FindOptionsWhere } from "typeorm";
 import { CommonSchema } from "@architecture/schemas/CommonSchema";
 import { ServiceOrderSchema } from "@app/domains/services/schemas/serviceOrderSchema";
 import ServiceOrderEntity from "@architecture/entities/service_order.entity";
+import { UserTypeEnum } from "@architecture/enums/user-type.enum";
 
 @JoiSchemaOptions({ allowUnknown: false })
 export class ListServiceOrderDTO {
+  @JoiSchema(
+    CommonSchema.text
+      .valid(UserTypeEnum.CUSTOMER, UserTypeEnum.PROVIDER)
+      .optional(),
+  )
+  @ApiProperty({ description: "Tipo de usuário", required: false })
+  role: string;
+
   @JoiSchema(ServiceOrderSchema.order.optional())
   @ApiProperty({ description: "Colunas de ordenação", required: false })
   order?: FindOptionsOrder<ServiceOrderEntity>;

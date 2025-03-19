@@ -3,6 +3,6 @@ export class RequestDTO {
     id: number;
     name: string;
     email: string;
-    type: number
-  }
+    type: number;
+  };
 }

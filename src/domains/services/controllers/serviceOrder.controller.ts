@@ -26,19 +26,17 @@ export class ServiceOrderController {
   @Post()
   async createOrderService(
     @Body(JoiPipe) createServiceOrderDTO: CreateServiceOrderDTO,
-    @Req() request: RequestDTO
+    @Req() request: RequestDTO,
   ) {
     const userId = request.user.id;
-    Logger.log(
-      `User ${userId} is trying to create a Service Order`,
-    );
+    Logger.log(`User ${userId} is trying to create a Service Order`);
     const serviceOrder = await this.serviceOrderService.createServiceOrder(
       userId,
       createServiceOrderDTO,
     );
 
     return new HttpResponseDTO(
-      201,
+      HttpStatus.CREATED,
       "Service Order create successfully",
       serviceOrder,
     );
@@ -65,13 +63,14 @@ export class ServiceOrderController {
 
   @Get()
   async getServiceOrdersOfUser(
-    @Query(JoiPipe) query: ListServiceOrderDTO,
     @Req() request: RequestDTO,
+    @Query(JoiPipe) query: ListServiceOrderDTO,
   ) {
     const userId = request.user.id;
     const serviceOrders = await this.serviceOrderService.getServiceOrdersOfUser(
       query,
       userId,
+      query.role,
     );
     return new HttpResponseDTO(
       HttpStatus.OK,

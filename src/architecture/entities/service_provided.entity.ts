@@ -4,15 +4,17 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import ProviderServiceEntity from "./provider_service.entity";
 import ServiceOrderEntity from "./service_order.entity";
+import FeedbackEntity from "@architecture/entities/feedback.entity";
 
 @Entity("service_provided")
-export class ServiceProvidedEntity {
+export default class ServiceProvidedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -44,6 +46,9 @@ export class ServiceProvidedEntity {
   )
   @JoinColumn({ name: "service_order_id" })
   serviceOrder: ServiceOrderEntity;
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.serviceProvided)
+  feedbacks: FeedbackEntity[];
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   createdAt: Date;

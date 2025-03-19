@@ -7,13 +7,13 @@ import UserRepository from "@architecture/repositories/user.repository";
 import AddressRepository from "@architecture/repositories/address.repository";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PetsModule } from "@pets/pets.module";
-import { UsersService } from '@users/users.service';
-import { UsersController } from './users.controller';
+import { UsersService } from "@users/users.service";
+import { UsersController } from "./users.controller";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, UserTypeEntity, AddressEntity]),
-    forwardRef(() =>  PetsModule),
+    forwardRef(() => PetsModule),
   ],
   controllers: [UsersController],
   providers: [BaseRepository, UserRepository, AddressRepository, UsersService],
