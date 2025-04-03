@@ -1,0 +1,61 @@
+name: Petow Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install dependencies and build
+      - name: ⚙️ Install Dependencies and Build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+
+      # Step 3: Setup SSH Connection
+      - name: 🔑 Setup SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
+
+      # Step 4: Deploy files to server
+      - name: 🚀 Deploy to Server
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          rsync -avz --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.github' \
+            --exclude '.env' \
+            ./ $SERVER_USER@$SERVER_HOST:/home/$SERVER_USER/myapp
+
+      # Step 5: Install dependencies and restart using PM2 with ecosystem.config.js
+      - name: 🔄 Restart Application with PM2
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh $SERVER_USER@$SERVER_HOST << 'EOF'
+            cd /home/$SERVER_USER/myapp
+            yarn install --frozen-lockfile
+            yarn build
+
+            # Se o app já existe no PM2, reinicia. Se não, inicia com ecosystem.config.js
+            pm2 restart Petow || pm2 start ecosystem.config.js
+            pm2 save
+          EOF
