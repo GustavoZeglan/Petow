@@ -27,9 +27,11 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_ed25519
+          ssh-keyscan -p 22 -H $SERVER_HOST >> ~/.ssh/known_hosts
 
       # Step 4: Deploy files to server
       - name: 🚀 Deploy to Server
@@ -37,6 +39,7 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
+          ssh $SERVER_USER@$SERVER_HOST "mkdir -p /home/$SERVER_USER/myapp"
           rsync -avz --delete \
             --exclude '.git' \
             --exclude 'node_modules' \
@@ -51,11 +54,13 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
           ssh $SERVER_USER@$SERVER_HOST << 'EOF'
-            cd /home/$SERVER_USER/myapp
+            cd /home/$SERVER_USER/Petow
             yarn install --frozen-lockfile
             yarn build
 
-            # Se o app já existe no PM2, reinicia. Se não, inicia com ecosystem.config.js
-            pm2 restart Petow || pm2 start ecosystem.config.js
+            # Parar e excluir o app antes de iniciar novamente
+            pm2 stop Petow || true
+            pm2 delete Petow || true
+            pm2 start ecosystem.config.js
             pm2 save
           EOF
