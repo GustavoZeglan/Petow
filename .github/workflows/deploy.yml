@@ -53,7 +53,7 @@ jobs:
         run: |
           ssh $SERVER_USER@$SERVER_HOST << 'EOF'
             # Garante que está no diretório correto
-            cd /home/$SERVER_USER/Petow || exit 1
+            cd /home/root/Petow || exit 1
             
             # Usa bash login shell para carregar variáveis
             export NVM_DIR="$HOME/.nvm"
