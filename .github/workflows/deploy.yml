@@ -52,13 +52,29 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
           ssh $SERVER_USER@$SERVER_HOST << 'EOF'
-            cd /home/$SERVER_USER/Petow
+            # Garante que está no diretório correto
+            cd /home/${SERVER_USER}/Petow || exit 1
+            
+            # Usa bash login shell para carregar variáveis
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # Garante que o yarn está instalado
+            if ! command -v yarn &> /dev/null; then
+              npm install -g yarn
+            fi
+
             yarn install --frozen-lockfile
             yarn build
 
-            # Parar e excluir o app antes de iniciar novamente
+            # Garante que o pm2 está instalado
+            if ! command -v pm2 &> /dev/null; then
+              npm install -g pm2
+            fi
+
+            # Reinicia a aplicação corretamente
             pm2 stop Petow || true
             pm2 delete Petow || true
-            pm2 start ecosystem.config.js
+            pm2 start ecosystem.config.js --name "Petow"
             pm2 save
           EOF
