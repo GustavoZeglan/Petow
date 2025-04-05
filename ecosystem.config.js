@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "Petow",
-      script: "Petow/dist/src/main.js",
+      script: "dist/src/main.js",
       watch: true,
       env: {
         DATABASE_LOGGING: process.env.DATABASE_LOGGING,
