@@ -30,20 +30,20 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
-
+      
       # Step 4: Deploy files to server
       - name: 🚀 Deploy to Server
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
-          ssh $SERVER_USER@$SERVER_HOST "mkdir -p /home/$SERVER_USER/Petow"
+          ssh $SERVER_USER@$SERVER_HOST "mkdir -p /root/Petow"
           rsync -avz --delete \
             --exclude '.git' \
             --exclude 'node_modules' \
             --exclude '.github' \
             --exclude '.env' \
-            ./ $SERVER_USER@$SERVER_HOST:/home/$SERVER_USER/Petow
+            ./ $SERVER_USER@$SERVER_HOST:/root/Petow
 
       # Step 5: Install dependencies and restart using PM2 with ecosystem.config.js
       - name: 🔄 Restart Application with PM2
