@@ -1,15 +1,25 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-import { Swagger } from "@architecture/swagger";
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { Swagger } from '@architecture/swagger'
+import { NestExpressApplication } from '@nestjs/platform-express'
+import { join } from 'path'
+import { Response } from 'express'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ["log", "warn", "debug", "error"],
-  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['log', 'warn', 'debug', 'error'],
+  })
 
-  Swagger.setup(app);
-  Swagger.setAlternativeRoutes(app);
+  app.useStaticAssets(join(__dirname, '..', 'public'))
 
-  await app.listen(process.env.PORT ?? 3000);
+  const expressApp = app.getHttpAdapter().getInstance()
+  expressApp.get('/', (req, res: Response) => {
+    res.sendFile(join(__dirname, '..', 'public', 'index.html'))
+  })
+
+  // Swagger.setup(app)
+  // Swagger.setAlternativeRoutes(app)
+
+  await app.listen(process.env.PORT ?? 3000)
 }
-bootstrap();
+bootstrap()
