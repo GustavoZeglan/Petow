@@ -78,4 +78,22 @@ export class ServiceOrderController {
       serviceOrders,
     );
   }
+
+  @Get(":id")
+  async getServiceOrdersInfo(
+    @Req() request: RequestDTO,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    const userId = request.user.id;
+    const serviceOrder = await this.serviceOrderService.getServiceOrderInfo(
+      userId,
+      id,
+    );
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Service order retrieved successfully",
+      serviceOrder,
+    );
+  }
+
 }

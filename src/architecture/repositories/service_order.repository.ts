@@ -69,9 +69,14 @@ export default class ServiceOrderRepository extends BaseRepository<ServiceOrderE
     return this.find({
       select: query.select,
       take: pageSize,
-      skip: (page - 1) * pageSize,
       relations: this.buildRelations(query.includes),
       where: this.buildWhereClause(searchConditions, query.filter),
+      ...(page && pageSize
+        ? {
+            take: pageSize,
+            skip: (page - 1) * pageSize,
+          }
+        : {}),
     });
   }
 }

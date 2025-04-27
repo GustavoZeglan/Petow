@@ -49,9 +49,16 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
   }
 
   protected normalizePagination(page?: number, pageSize?: number) {
+    if (!pageSize || pageSize <= 0) {
+      return {
+        page: undefined,
+        pageSize: undefined,
+      };
+    }
+  
     return {
       page: page && page > 0 ? page : 1,
-      pageSize: pageSize && pageSize > 0 ? pageSize : 10,
+      pageSize,
     };
   }
 
@@ -116,9 +123,14 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.find({
       select: query.select,
       take: pageSize,
-      skip: (page - 1) * pageSize,
       relations: this.buildRelations(query.includes),
       where: this.buildWhereClause(searchConditions, query.filter),
+      ...(page && pageSize
+        ? {
+            take: 20,
+            skip: (page - 1) * pageSize,
+          }
+        : {}),
     });
   }
 

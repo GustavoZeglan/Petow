@@ -50,10 +50,15 @@ export default class FeedbackRepository extends BaseRepository<FeedbackEntity> {
     return this.find({
       select: query?.select,
       take: pageSize,
-      skip: (page - 1) * pageSize,
       relations: this.buildRelations(query?.includes || []),
       where: searchConditions,
       order: query?.order,
+      ...(page && pageSize
+        ? {
+            take: pageSize,
+            skip: (page - 1) * pageSize,
+          }
+        : {}),
     });
   }
 }

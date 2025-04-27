@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import ServiceOrderRepository from "@architecture/repositories/service_order.repository";
 import { DataSource, QueryRunner } from "typeorm";
@@ -28,7 +29,7 @@ export class ServiceOrderService {
     private readonly addressRepository: AddressRepository,
     private readonly petRepository: PetRepository,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async createServiceOrder(
     userId: number,
@@ -190,4 +191,27 @@ export class ServiceOrderService {
 
     return serviceOrders;
   }
+
+  async getServiceOrderInfo(
+    userId: number,
+    id: number,
+  ) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!user) throw new NotFoundException("User not found");
+
+    const serviceOrder = await this.serviceOrderRepository.findServiceOrderInfo(
+      id,
+    );
+
+    if (!serviceOrder) throw new NotFoundException("Service Order not found");
+    
+    if (![serviceOrder.customer.id, serviceOrder.provider.id].includes(userId)) throw new UnauthorizedException("You are not authorized");
+    
+    serviceOrder?.toModel();
+
+    return serviceOrder;
+  }
+
 }
