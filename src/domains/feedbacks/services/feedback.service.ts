@@ -70,6 +70,11 @@ export class FeedbackService {
 
     let feedbackToCreate: FeedbackEntity;
 
+    receiver.feedbackCounter = (receiver.feedbackCounter || 0) + 1;
+    receiver.feedbackSum = (receiver.feedbackSum || 0) + createFeedbackDTO.rating;
+
+    await this.userRepository.save(receiver);
+
     if (createFeedbackDTO.feedbackType === FeedbackTypeEnum.PET_RATING) {
       const pet = await this.userRepository.findOne({
         where: { id: createFeedbackDTO.petId },
@@ -138,7 +143,7 @@ export class FeedbackService {
   ) {
     const feedback = await this.feedbackRepository.findOne({
       where: { id },
-      relations: ["sender"],
+      relations: ["sender", "receiver"],
     });
 
     if (!feedback) {
@@ -163,6 +168,11 @@ export class FeedbackService {
       throw new BadRequestException("No update data provided");
     }
 
+    if (updateFeedbackDTO.rating) {
+      feedback.receiver.feedbackSum = feedback.receiver.feedbackSum - feedback.rating + updateFeedbackDTO.rating;
+      this.userRepository.save(feedback.receiver);
+    }
+
     const feedbackToUpdate = this.feedbackRepository.create({
       ...feedback,
       ...updateFeedbackDTO,
@@ -178,7 +188,7 @@ export class FeedbackService {
   async deleteFeedback(userId: number, id: number) {
     const feedback = await this.feedbackRepository.findOne({
       where: { id },
-      relations: ["sender"],
+      relations: ["sender", "receiver"],
     });
 
     if (!feedback) {
@@ -198,6 +208,10 @@ export class FeedbackService {
         "You are not allowed to delete this feedback",
       );
     }
+
+    feedback.receiver.feedbackSum = feedback.receiver.feedbackSum - feedback.rating;
+    feedback.receiver.feedbackCounter = feedback.receiver.feedbackCounter - 1;
+    this.userRepository.save(feedback.receiver);
 
     await this.feedbackRepository.delete(id);
   }

@@ -36,6 +36,12 @@ export default class UserEntity {
   @Column({ name: "password", type: "text" })
   password: string;
 
+  @Column({ name: "feedback_counter", type: "integer" })
+  feedbackCounter: number;
+
+  @Column({ name: "feedback_sum", type: "integer" })
+  feedbackSum: number;
+
   @ManyToOne(() => UserTypeEntity, (userType) => userType.users)
   @JoinColumn({ name: "user_type_id" })
   type: UserTypeEntity;
@@ -82,8 +88,10 @@ export default class UserEntity {
       deletedAt: undefined,
       password: undefined,
       type: undefined,
-      phone: undefined,
       cpf: undefined,
+      feedbackCounter: undefined,
+      feedbackSum: undefined,
+      rate: this.feedbackCounter == 0 || this.feedbackSum == 0 ? 0 : this.feedbackSum / this.feedbackCounter 
     });
   }
 }
