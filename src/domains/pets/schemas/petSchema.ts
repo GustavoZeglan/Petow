@@ -23,6 +23,7 @@ export class PetSchema {
 
   static filter = Joi.object({
     name: Joi.string(),
+    id: Joi.number(),
   });
 
   static select = Joi.object({

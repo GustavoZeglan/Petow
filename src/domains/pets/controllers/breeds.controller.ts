@@ -17,6 +17,7 @@ export class BreedsController {
 
   @Get()
   async getBreeds(@Req() req: RequestDTO, @Query() query: ListBreedsDTO) {
+    Logger.log(query);
     Logger.log(`User ${req.user.id} requested breeds`);
     const breeds = await this.breedsService.getBreeds(query);
     return new HttpResponseDTO(

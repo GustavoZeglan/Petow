@@ -20,21 +20,6 @@ export class ListFeedbackDTO {
   @ApiProperty({ description: "Order columns", required: false })
   order?: FindOptionsOrder<FeedbackEntity>;
 
-  @JoiSchema(FeedbackSchema.filter.optional())
-  @ApiProperty({ description: "Filter conditions", required: false })
-  filter?: FindOptionsWhere<FeedbackEntity>;
-
-  @JoiSchema(FeedbackSchema.select.optional())
-  @ApiProperty({
-    description: "Columns to be selected",
-    required: false,
-  })
-  select?: FindOptionsSelect<FeedbackEntity>;
-
-  @JoiSchema(FeedbackSchema.includes.optional())
-  @ApiProperty({ description: "Relations to include", required: false })
-  includes?: string[];
-
   @ApiProperty({ description: "Page number", required: false })
   @JoiSchema(CommonSchema.page.optional())
   page?: number;

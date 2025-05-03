@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Logger,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -48,6 +49,21 @@ export class PetsController {
       HttpStatus.OK,
       "Pets retrieved successfully",
       pets,
+    );
+  }
+
+  @Get(":id")
+  async getPetInfo(
+    @Req() req: RequestDTO,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    const userId = req.user.id;
+    Logger.log(`User ${userId} is retrieving pet ${id}`);
+    const pet = await this.petsService.getPet(id);
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Pet retrieved successfully",
+      pet,
     );
   }
 

@@ -91,7 +91,10 @@ export default class UserEntity {
       cpf: undefined,
       feedbackCounter: undefined,
       feedbackSum: undefined,
-      rate: this.feedbackCounter == 0 || this.feedbackSum == 0 ? 0 : this.feedbackSum / this.feedbackCounter 
+      rate:
+        this.feedbackCounter == 0 || this.feedbackSum == 0
+          ? 0
+          : this.feedbackSum / this.feedbackCounter,
     });
   }
 }

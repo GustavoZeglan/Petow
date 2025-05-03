@@ -38,6 +38,7 @@ export class FeedbackSchema {
   static filter = Joi.object({
     description: Joi.string(),
     rating: Joi.number().min(0).max(5),
+    serviceProvided: Joi.number(),
   });
 
   static select = Joi.object({

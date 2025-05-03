@@ -20,20 +20,6 @@ export class ListServiceOrderDTO {
   @ApiProperty({ description: "Colunas de ordenação", required: false })
   order?: FindOptionsOrder<ServiceOrderEntity>;
 
-  @JoiSchema(ServiceOrderSchema.filter.optional())
-  @ApiProperty({ description: "Condições para seleção", required: false })
-  filter?: FindOptionsWhere<ServiceOrderEntity>;
-
-  @JoiSchema(ServiceOrderSchema.select.optional())
-  @ApiProperty({
-    description: "Colunas que serão selecionadas",
-    required: false,
-  })
-  select?: FindOptionsSelect<ServiceOrderEntity>;
-
-  @JoiSchema(ServiceOrderSchema.includes.optional())
-  includes?: string[];
-
   @ApiProperty({ description: "Número da página", required: false })
   @JoiSchema(CommonSchema.page.optional())
   page?: number;

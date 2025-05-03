@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Logger,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -44,8 +45,8 @@ export class FeedbackController {
   @Get(":id")
   async getFeedbacks(
     @Req() req: RequestDTO,
-    @Param("id") id: number,
-    @Query("entity") query: ListFeedbackDTO,
+    @Param("id", ParseIntPipe) id: number,
+    @Query(JoiPipe) query: ListFeedbackDTO,
   ) {
     const userId = req.user.id;
     Logger.log(`User ${userId} is trying to see feedbacks of user/pet ${id}`);
@@ -55,6 +56,23 @@ export class FeedbackController {
       query?.entity,
     );
     return new HttpResponseDTO(HttpStatus.OK, "Feedbacks retrieved", feedbacks);
+  }
+
+  @Get("service/:id")
+  async verifyUserFeedbackForServiceProvided(
+    @Req() req: RequestDTO,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    const userId = req.user.id;
+    Logger.log(
+      `Verifying if ${userId} already make a feedback for serviceProvided ${id}`,
+    );
+    const feedback =
+      await this.feedbackService.verifyUserFeedbackForServiceProvided(
+        userId,
+        id,
+      );
+    return new HttpResponseDTO(HttpStatus.OK, "Feedbacks retrieved", feedback);
   }
 
   @Patch(":id")

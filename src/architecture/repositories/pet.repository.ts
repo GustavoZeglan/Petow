@@ -20,4 +20,13 @@ export default class PetRepository extends BaseRepository<PetEntity> {
       },
     });
   }
+
+  async findPetById(petId: number) {
+    return this.createQueryBuilder("pet")
+      .innerJoinAndSelect("pet.user", "user")
+      .innerJoinAndSelect("pet.breed", "breed")
+      .innerJoinAndSelect("pet.specie", "specie")
+      .where("pet.id = :petId", { petId })
+      .getOne();
+  }
 }

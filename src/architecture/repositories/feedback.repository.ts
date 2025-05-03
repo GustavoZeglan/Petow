@@ -15,17 +15,23 @@ export default class FeedbackRepository extends BaseRepository<FeedbackEntity> {
     Object.assign(this, repository);
   }
 
-  private buildSearchConditionsByEntity(
-    id: number,
-    entity?: string,
-  ): FindOptionsWhere<FeedbackEntity>[] {
-    switch (entity) {
-      case FeedbackEntityType.PET:
-        return [{ pet: { id } }];
-      case FeedbackEntityType.USER:
-      default:
-        return [{ receiver: { id } }];
-    }
+  async findUserFeedbackForServiceProvided(
+    userId: number,
+    serviceProvidedId: number,
+  ): Promise<FeedbackEntity | null> {
+    return this.repository
+      .createQueryBuilder("feedback")
+      .where("feedback.sender_user_id = :userId", { userId })
+      .andWhere("feedback.service_provided_id = :serviceProvidedId", {
+        serviceProvidedId,
+      })
+      .andWhere("feedback.deleted_at IS NULL")
+      .leftJoinAndSelect("feedback.feedbackType", "feedbackType")
+      .leftJoinAndSelect("feedback.receiver", "receiver")
+      .leftJoinAndSelect("feedback.sender", "sender")
+      .leftJoinAndSelect("feedback.pet", "pet")
+      .leftJoinAndSelect("feedback.serviceProvided", "serviceProvided")
+      .getOne();
   }
 
   async findFeedbacks(query: any, id: number, entity?: FeedbackEntityType) {
@@ -33,32 +39,29 @@ export default class FeedbackRepository extends BaseRepository<FeedbackEntity> {
       `Finding feedbacks for ${entity || FeedbackEntityType.USER} ${id} with query: ${JSON.stringify(query)}`,
     );
 
-    const entityBasedConditions = this.buildSearchConditionsByEntity(
-      id,
-      entity,
-    );
-    const searchConditions = [
-      ...this.normalizeSearchConditions(query?.filter || {}),
-      ...entityBasedConditions,
-    ];
-
     const { page, pageSize } = this.normalizePagination(
       query?.page,
       query?.pageSize,
     );
 
-    return this.find({
-      select: query?.select,
-      take: pageSize,
-      relations: this.buildRelations(query?.includes || []),
-      where: searchConditions,
-      order: query?.order,
-      ...(page && pageSize
-        ? {
-            take: pageSize,
-            skip: (page - 1) * pageSize,
-          }
-        : {}),
-    });
+    const qb = this.repository
+      .createQueryBuilder("feedback")
+      .leftJoinAndSelect("feedback.sender", "sender")
+      .leftJoinAndSelect("feedback.receiver", "receiver")
+      .leftJoinAndSelect("feedback.pet", "pet")
+      .leftJoinAndSelect("feedback.serviceProvided", "serviceProvided")
+      .leftJoinAndSelect("feedback.feedbackType", "feedbackType");
+
+    if (entity === FeedbackEntityType.PET) {
+      qb.where("pet.id = :id", { id });
+    } else {
+      qb.where("receiver.id = :id", { id });
+    }
+
+    if (page && pageSize) {
+      qb.skip((page - 1) * pageSize).take(pageSize);
+    }
+
+    return qb.getMany();
   }
 }

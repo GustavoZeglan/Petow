@@ -29,7 +29,7 @@ export class ServiceOrderService {
     private readonly addressRepository: AddressRepository,
     private readonly petRepository: PetRepository,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async createServiceOrder(
     userId: number,
@@ -192,26 +192,22 @@ export class ServiceOrderService {
     return serviceOrders;
   }
 
-  async getServiceOrderInfo(
-    userId: number,
-    id: number,
-  ) {
+  async getServiceOrderInfo(userId: number, id: number) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
     if (!user) throw new NotFoundException("User not found");
 
-    const serviceOrder = await this.serviceOrderRepository.findServiceOrderInfo(
-      id,
-    );
+    const serviceOrder =
+      await this.serviceOrderRepository.findServiceOrderInfo(id);
 
     if (!serviceOrder) throw new NotFoundException("Service Order not found");
-    
-    if (![serviceOrder.customer.id, serviceOrder.provider.id].includes(userId)) throw new UnauthorizedException("You are not authorized");
-    
+
+    if (![serviceOrder.customer.id, serviceOrder.provider.id].includes(userId))
+      throw new UnauthorizedException("You are not authorized");
+
     serviceOrder?.toModel();
 
     return serviceOrder;
   }
-
 }

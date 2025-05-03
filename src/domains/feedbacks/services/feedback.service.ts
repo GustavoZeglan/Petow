@@ -71,7 +71,8 @@ export class FeedbackService {
     let feedbackToCreate: FeedbackEntity;
 
     receiver.feedbackCounter = (receiver.feedbackCounter || 0) + 1;
-    receiver.feedbackSum = (receiver.feedbackSum || 0) + createFeedbackDTO.rating;
+    receiver.feedbackSum =
+      (receiver.feedbackSum || 0) + createFeedbackDTO.rating;
 
     await this.userRepository.save(receiver);
 
@@ -136,6 +137,25 @@ export class FeedbackService {
     return feedbacks;
   }
 
+  async verifyUserFeedbackForServiceProvided(
+    userId: number,
+    serviceProvidedId: number,
+  ) {
+    const feedback =
+      await this.feedbackRepository.findUserFeedbackForServiceProvided(
+        userId,
+        serviceProvidedId,
+      );
+
+    if (!feedback) {
+      throw new NotFoundException(`Feedback not found`);
+    }
+
+    feedback.toModel();
+
+    return feedback;
+  }
+
   async updateFeedback(
     userId: number,
     id: number,
@@ -169,7 +189,10 @@ export class FeedbackService {
     }
 
     if (updateFeedbackDTO.rating) {
-      feedback.receiver.feedbackSum = feedback.receiver.feedbackSum - feedback.rating + updateFeedbackDTO.rating;
+      feedback.receiver.feedbackSum =
+        feedback.receiver.feedbackSum -
+        feedback.rating +
+        updateFeedbackDTO.rating;
       this.userRepository.save(feedback.receiver);
     }
 
@@ -209,7 +232,8 @@ export class FeedbackService {
       );
     }
 
-    feedback.receiver.feedbackSum = feedback.receiver.feedbackSum - feedback.rating;
+    feedback.receiver.feedbackSum =
+      feedback.receiver.feedbackSum - feedback.rating;
     feedback.receiver.feedbackCounter = feedback.receiver.feedbackCounter - 1;
     this.userRepository.save(feedback.receiver);
 

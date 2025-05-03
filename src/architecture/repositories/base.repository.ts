@@ -5,17 +5,13 @@ import {
   FindOptionsRelations,
   FindOptionsSelect,
   FindOptionsWhere,
-  Like,
   ObjectLiteral,
   QueryRunner,
   Repository,
 } from "typeorm";
 
 export type FindManyOptions<T> = {
-  search?: FindOptionsWhere<T>[] | FindOptionsWhere<T>;
-  filter?: FindOptionsWhere<T>[] | FindOptionsWhere<T>;
   includes?: string[];
-  select?: FindOptionsSelect<T>;
   page?: number;
   pageSize?: number;
 };
@@ -27,13 +23,6 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
     queryRunner?: QueryRunner,
   ) {
     super(target, manager, queryRunner);
-  }
-
-  protected normalizeSearchConditions(
-    searchQuery?: FindOptionsWhere<T>[] | FindOptionsWhere<T>,
-  ): FindOptionsWhere<T>[] {
-    if (!searchQuery) return [];
-    return Array.isArray(searchQuery) ? searchQuery : [searchQuery];
   }
 
   protected buildRelations(
@@ -55,65 +44,15 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
         pageSize: undefined,
       };
     }
-  
+
     return {
       page: page && page > 0 ? page : 1,
       pageSize,
     };
   }
 
-  protected buildWhereClause(
-    searchConditions: FindOptionsWhere<T>[],
-    filter?: FindOptionsWhere<T>[] | FindOptionsWhere<T>,
-  ): FindOptionsWhere<T> | FindOptionsWhere<T>[] {
-    const formattedSearch = searchConditions.map((condition) =>
-      this.formatSearch(condition),
-    );
-
-    if (!filter) {
-      return formattedSearch.length === 1
-        ? formattedSearch[0]
-        : formattedSearch;
-    }
-
-    const filters = this.normalizeSearchConditions(filter);
-    return [...filters, ...formattedSearch];
-  }
-
-  formatSearch(
-    search: FindOptionsWhere<T>,
-    userId?: number,
-  ): FindOptionsWhere<T> {
-    const searchFormatted: Partial<Record<keyof T, any>> = {};
-
-    for (const key in search) {
-      if (Object.prototype.hasOwnProperty.call(search, key)) {
-        const value = search[key];
-
-        if (key === "customerId" || key === "providerId") {
-          if (userId) {
-            searchFormatted[key as keyof T] = userId;
-          }
-        } else if (typeof value === "string") {
-          searchFormatted[key as keyof T] = Like(`%${value.toLowerCase()}%`);
-        } else {
-          searchFormatted[key as keyof T] = value;
-        }
-      }
-    }
-
-    return searchFormatted as FindOptionsWhere<T>;
-  }
-
   async findMany(query: FindManyOptions<T>, userId?: number) {
     Logger.log(`Find many with query: ${JSON.stringify(query)}`);
-
-    const searchConditions = this.normalizeSearchConditions(query.search);
-    if (userId) {
-      searchConditions.push({
-        user: { id: userId },
-      } as unknown as FindOptionsWhere<T>);
-    }
 
     const { page, pageSize } = this.normalizePagination(
       query.page,
@@ -121,13 +60,10 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
     );
 
     return this.find({
-      select: query.select,
-      take: pageSize,
       relations: this.buildRelations(query.includes),
-      where: this.buildWhereClause(searchConditions, query.filter),
       ...(page && pageSize
         ? {
-            take: 20,
+            take: pageSize,
             skip: (page - 1) * pageSize,
           }
         : {}),

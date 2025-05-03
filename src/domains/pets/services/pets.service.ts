@@ -57,6 +57,14 @@ export class PetsService {
     return pets.map((pet) => pet.toModel());
   }
 
+  async getPet(petId: number) {
+    const pet = await this.petsRepository.findPetById(petId);
+
+    if (!pet) throw new NotFoundException("Pet not found");
+
+    return pet.toModel();
+  }
+
   async updatePet(updatePetDTO: UpdatePetDTO, userId: number, petId: number) {
     const pet = await this.petsRepository.findOne({
       where: { id: petId },

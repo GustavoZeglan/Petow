@@ -55,28 +55,35 @@ export default class ServiceOrderRepository extends BaseRepository<ServiceOrderE
       `Finding service orders for user ${userId} with query: ${JSON.stringify(query)}`,
     );
 
-    const roleBasedConditions = this.buildSearchConditionsByRole(userId, role);
-    const searchConditions = [
-      ...this.normalizeSearchConditions(query.search),
-      ...roleBasedConditions,
-    ];
-
     const { page, pageSize } = this.normalizePagination(
-      query.page,
-      query.pageSize,
+      query?.page,
+      query?.pageSize,
     );
 
-    return this.find({
-      select: query.select,
-      take: pageSize,
-      relations: this.buildRelations(query.includes),
-      where: this.buildWhereClause(searchConditions, query.filter),
-      ...(page && pageSize
-        ? {
-            take: pageSize,
-            skip: (page - 1) * pageSize,
-          }
-        : {}),
-    });
+    const qb = this.createQueryBuilder("serviceOrder")
+      .innerJoinAndSelect("serviceOrder.service", "service")
+      .innerJoinAndSelect("serviceOrder.customer", "customer")
+      .innerJoinAndSelect("serviceOrder.provider", "provider")
+      .innerJoinAndSelect("serviceOrder.address", "address");
+
+    switch (role) {
+      case UserTypeEnum.CUSTOMER:
+        qb.where("customer.id = :userId", { userId });
+        break;
+      case UserTypeEnum.PROVIDER:
+        qb.where("provider.id = :userId", { userId });
+        break;
+      default:
+        qb.where("(customer.id = :userId OR provider.id = :userId)", {
+          userId,
+        });
+        break;
+    }
+
+    if (page && pageSize) {
+      qb.skip((page - 1) * pageSize).take(pageSize);
+    }
+
+    return qb.getMany();
   }
 }
