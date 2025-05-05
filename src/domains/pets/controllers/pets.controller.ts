@@ -17,7 +17,6 @@ import { PetsService } from "@pets/services/pets.service";
 import { CreatePetDTO } from "@pets/dtos/CreatePetDTO";
 import { JoiPipe } from "nestjs-joi";
 import { RequestDTO } from "@architecture/dtos/RequestDTO";
-import { ListPetsDTO } from "@pets/dtos/ListPetsDTO";
 import { UpdatePetDTO } from "@pets/dtos/UpdatePetDTO";
 
 @Controller("pets")
@@ -41,10 +40,10 @@ export class PetsController {
   }
 
   @Get()
-  async getPets(@Req() req: RequestDTO, @Query() query: ListPetsDTO) {
+  async getPets(@Req() req: RequestDTO) {
     const userId = req.user.id;
     Logger.log(`User ${userId} is retrieving pets`);
-    const pets = await this.petsService.getPets(query, userId);
+    const pets = await this.petsService.getPets(userId);
     return new HttpResponseDTO(
       HttpStatus.OK,
       "Pets retrieved successfully",

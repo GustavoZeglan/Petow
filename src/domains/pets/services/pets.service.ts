@@ -8,7 +8,6 @@ import {
 import { CreatePetDTO } from "@pets/dtos/CreatePetDTO";
 import BreedRepository from "@architecture/repositories/breed.repository";
 import UserRepository from "@architecture/repositories/user.repository";
-import { ListPetsDTO } from "@pets/dtos/ListPetsDTO";
 import { UpdatePetDTO } from "@pets/dtos/UpdatePetDTO";
 
 @Injectable()
@@ -52,8 +51,8 @@ export class PetsService {
     return pet.toModel();
   }
 
-  async getPets(query: ListPetsDTO, userId: number) {
-    const pets = await this.petsRepository.findMany(query, userId);
+  async getPets(userId: number) {
+    const pets = await this.petsRepository.findPets(userId);
     return pets.map((pet) => pet.toModel());
   }
 
