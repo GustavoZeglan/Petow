@@ -5,24 +5,29 @@ import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
 import * as dotenv from 'dotenv';
 dotenv.config();
-
 @Module({
   exports: [MINIO_TOKEN],
   providers: [
     {
       provide: MINIO_TOKEN,
       useFactory: async (): Promise<Minio.Client> => {
-        const minioEndpoint = process.env.MINIO_ENDPOINT;
-        console.log('MINIO_ENDPOINT:', minioEndpoint);  
-        const client = new Minio.Client({
-          endPoint: minioEndpoint!,
-          port: parseInt(process.env.MINIO_PORT || '443'),
-          useSSL: process.env.MINIO_USE_SSL === 'true',
-          accessKey: process.env.MINIO_ACCESS_KEY!,
-          secretKey: process.env.MINIO_SECRET_KEY!,
-        });
+        const endpoint = process.env.MINIO_ENDPOINT;
+        const port = process.env.MINIO_PORT ? parseInt(process.env.MINIO_PORT) : 443;
+        const useSSL = process.env.MINIO_USE_SSL === 'true';
+        const accessKey = process.env.MINIO_ACCESS_KEY;
+        const secretKey = process.env.MINIO_SECRET_KEY;
 
-        return client;
+        if (!endpoint || !accessKey || !secretKey) {
+          throw new Error('Missing required MinIO environment variables');
+        }
+
+        return new Minio.Client({
+          endPoint: endpoint,
+          port: port,
+          useSSL: useSSL,
+          accessKey: accessKey,
+          secretKey: secretKey,
+        });
       },
     },
     UploadService,
