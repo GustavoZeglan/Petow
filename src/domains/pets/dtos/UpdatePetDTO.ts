@@ -29,6 +29,12 @@ export class UpdatePetDTO {
   })
   comments: string;
 
+  @JoiSchema(PetSchema.image.optional())
+  @ApiProperty({
+    description: "File name on minio",
+  })
+  image: string;
+
   @JoiSchema(PetSchema.specieId.optional())
   @ApiProperty({
     description: "Specie ID",

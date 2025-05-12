@@ -6,8 +6,14 @@ import { ListBreedsDTO } from "@pets/dtos/ListBreedsDTO";
 export class BreedsService {
   constructor(private readonly breedRepository: BreedRepository) {}
 
-  async getBreeds(query: ListBreedsDTO) {
-    const breeds = await this.breedRepository.findMany(query);
+  async getDogsBreeds() {
+    const breeds = await this.breedRepository.findDogsBreeds();
+    breeds.map((entity) => entity.toModel());
+    return breeds;
+  }
+
+  async getCatsBreeds() {
+    const breeds = await this.breedRepository.findCatsBreeds();
     breeds.map((entity) => entity.toModel());
     return breeds;
   }

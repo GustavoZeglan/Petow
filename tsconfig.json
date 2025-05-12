@@ -26,6 +26,7 @@
       "@services/*": ["src/domains/services/*"],
       "@pets/*": ["src/domains/pets/*"],
       "@feedbacks/*": ["src/domains/feedbacks/*"],
+      "@upload/*": ["src/domains/upload/*"],
     }
   }
 }
