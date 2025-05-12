@@ -14,8 +14,15 @@ import { UploadService } from './upload.service';
         const useSSL = process.env.MINIO_USE_SSL === 'true';
         const accessKey = process.env.MINIO_ACCESS_KEY;
         const secretKey = process.env.MINIO_SECRET_KEY;
-
+        
+        console.log('DEBUG MINIO ENV: MINIO_ENDPOINT:', endpoint);
+        console.log('DEBUG MINIO ENV: MINIO_PORT:', port);
+        console.log('DEBUG MINIO ENV: MINIO_USE_SSL:', useSSL);
+        console.log('DEBUG MINIO ENV: MINIO_ACCESS_KEY (partial):', accessKey ? accessKey.substring(0, 5) + '...' : 'UNDEFINED');
+        console.log('DEBUG MINIO ENV: MINIO_SECRET_KEY (partial):', secretKey ? secretKey.substring(0, 5) + '...' : 'UNDEFINED');
+        
         if (!endpoint || !accessKey || !secretKey) {
+          console.error('ERROR: Variáveis de ambiente MinIO obrigatórias ausentes!');
           throw new Error('Missing required MinIO environment variables');
         }
 
