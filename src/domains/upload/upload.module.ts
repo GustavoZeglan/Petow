@@ -3,8 +3,6 @@ import { MINIO_TOKEN } from '@architecture/decorators/minio.decorator';
 import * as Minio from 'minio';
 import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
-import * as dotenv from 'dotenv';
-dotenv.config();
 @Module({
   exports: [MINIO_TOKEN],
   providers: [
