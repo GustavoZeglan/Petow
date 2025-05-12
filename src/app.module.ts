@@ -11,11 +11,14 @@ import { ServicesModule } from "@services/services.module";
 import { UsersModule } from "@users/users.module";
 import { AuthModule } from "@auth/auth.module";
 import { FeedbackModule } from "@feedbacks/feedback.module";
+import { UploadModule } from "@upload/upload.module";
+import minioConfig from "./domains/upload/minio.config";
 dotenv.config();
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      load: [minioConfig],
       envFilePath: ".env",
       isGlobal: true,
     }),
@@ -25,6 +28,7 @@ dotenv.config();
     UsersModule,
     AuthModule,
     FeedbackModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],

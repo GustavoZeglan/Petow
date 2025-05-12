@@ -11,6 +11,7 @@ export class PetSchema {
   static comments = CommonSchema.text;
   static specieId = CommonSchema.number;
   static breedId = CommonSchema.number;
+  static image = CommonSchema.text;
 
   static order = Joi.object({
     createdAt: CommonSchema.order,

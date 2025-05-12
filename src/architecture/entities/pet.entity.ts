@@ -30,6 +30,9 @@ export default class PetEntity {
   @Column({ name: "comments", type: "text" })
   comments: string;
 
+  @Column({ name: "image", type: "varchar", nullable: true })
+  image: string;
+
   @OneToMany(
     () => ServiceOrderPetEntity,
     (serviceOrderPet) => serviceOrderPet.pet,

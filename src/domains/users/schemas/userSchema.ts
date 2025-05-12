@@ -23,6 +23,7 @@ export class UserSchema {
   static cpf = cpfSchema;
   static password = CommonSchema.text;
   static userType = CommonSchema.number.valid(1, 2);
+  static image = CommonSchema.text;
 
   static includes = Joi.array()
     .items(Joi.string().valid(...UserIncludeValues))

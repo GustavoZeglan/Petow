@@ -4,6 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm/repository/Repository";
@@ -12,6 +13,7 @@ import { CreateUserDTO } from "./dtos/CreateUserDTO";
 import UserTypeEntity from "@architecture/entities/user_type.entity";
 import { CreateAddressDTO } from "@users/dtos/CreateAddressDTO";
 import AddressEntity from "@architecture/entities/address.entity";
+import { UpdateUserDTO } from "./dtos/UpdateUserDTO";
 
 @Injectable()
 export class UsersService {
@@ -89,6 +91,18 @@ export class UsersService {
       addressItem.toModel();
     }
     return address;
+  }
+
+  async updateUser(updateUserDTO: UpdateUserDTO, userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    await this.userRepository.save({
+      ...user,
+      ...updateUserDTO,
+    });
   }
 
   async deleteAddress(userId: number, addressId: number) {

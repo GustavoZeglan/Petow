@@ -30,6 +30,9 @@ export default class UserEntity {
   @Column({ name: "cpf", type: "varchar", length: "11", unique: true })
   cpf: string;
 
+  @Column({ name: "image", type: "varchar", nullable: true })
+  image: string;
+
   @Column({ name: "phone", type: "varchar", length: "50" })
   phone: string;
 

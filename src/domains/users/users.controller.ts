@@ -6,7 +6,9 @@ import {
   HttpStatus,
   Logger,
   Param,
+  Patch,
   Post,
+  Query,
   Req,
 } from "@nestjs/common";
 import { UsersService } from "@users/users.service";
@@ -16,6 +18,7 @@ import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
 import { Public } from "@architecture/decorators/public";
 import { CreateAddressDTO } from "@users/dtos/CreateAddressDTO";
 import { RequestDTO } from "@architecture/dtos/RequestDTO";
+import { UpdateUserDTO } from "@users/dtos/UpdateUserDTO";
 
 @Controller("users")
 export class UsersController {
@@ -31,6 +34,18 @@ export class UsersController {
       "User created successfully",
       user,
     );
+  }
+
+  @Patch()
+  async updateUser(
+    @Req() req: RequestDTO,
+    @Body(JoiPipe)
+    updatePetDTO: UpdateUserDTO,
+  ) {
+    const userId = req.user.id;
+    Logger.log(`Trying to update user ${userId}`);
+    await this.usersService.updateUser(updatePetDTO, userId);
+    return new HttpResponseDTO(HttpStatus.OK, "User updated successfully");
   }
 
   @Post("address")
