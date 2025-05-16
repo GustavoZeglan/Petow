@@ -5,10 +5,8 @@ const providerServiceIncludeValues = ["service", "provider"] as const;
 
 export class ProviderServiceSchema {
   static price = CommonSchema.number;
-
-  static order = Joi.object({
-    createdAt: CommonSchema.order,
-  });
+  static order = Joi.string().valid("ASC", "DESC").optional();
+  static providerName = CommonSchema.text.optional();
 
   static includes = Joi.array()
     .items(Joi.string().valid(...providerServiceIncludeValues))

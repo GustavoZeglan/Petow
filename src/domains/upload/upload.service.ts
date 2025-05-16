@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
 import { randomUUID } from "crypto";
 import * as Minio from "minio";
 import { InjectMinio } from "@architecture/decorators/minio.decorator";
@@ -8,7 +12,7 @@ import { InjectMinio } from "@architecture/decorators/minio.decorator";
 export class UploadService {
   protected _bucketName = "petowuploads";
 
-  constructor(@InjectMinio() private readonly minioService: Minio.Client) { }
+  constructor(@InjectMinio() private readonly minioService: Minio.Client) {}
 
   async bucketsList() {
     return await this.minioService.listBuckets();
@@ -34,10 +38,8 @@ export class UploadService {
       );
       return filename;
     } catch (error) {
-      Logger.error(error)
-      throw new InternalServerErrorException(
-        "Failed to upload file",
-      );
+      Logger.error(error);
+      throw new InternalServerErrorException("Failed to upload file");
     }
   }
 }
