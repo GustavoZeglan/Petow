@@ -14,7 +14,7 @@ import { HttpResponseDTO } from "@architecture/dtos/HttpResponseDTO";
 
 @Controller("uploads")
 export class UploadController {
-  constructor(readonly uploadService: UploadService) { }
+  constructor(readonly uploadService: UploadService) {}
 
   @Get("buckets")
   async bucketsList() {

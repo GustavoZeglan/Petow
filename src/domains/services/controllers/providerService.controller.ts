@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Logger,
   Param,
+  ParseEnumPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -18,6 +19,8 @@ import { JoiPipe } from "nestjs-joi";
 import { UpdateProviderServiceDTO } from "@services/dtos/UpdateProviderServiceDTO";
 import { ListProviderServiceDTO } from "@services/dtos/ListProviderServiceDTO";
 import { RequestDTO } from "@architecture/dtos/RequestDTO";
+import { ServiceEnum } from "@architecture/enums/service.enum";
+import { GetProviderServiceDTO } from "../dtos/GetProvidersDTO";
 
 @Controller("provider-service")
 export class ProviderServiceController {
@@ -42,6 +45,26 @@ export class ProviderServiceController {
       HttpStatus.OK,
       "Provider services retrieved successfully",
       providerServices,
+    );
+  }
+
+  @Get("provider/:service")
+  async getProviders(
+    @Param("service", new ParseEnumPipe(ServiceEnum)) service: ServiceEnum,
+    @Query(JoiPipe) query: GetProviderServiceDTO,
+    @Req() req: RequestDTO,
+  ) {
+    const userId = req.user.id;
+    Logger.log(`User ${userId} is trying to see providers of ${service}`);
+    const services = await this.providerServiceService.findProviders(
+      service,
+      userId,
+      query,
+    );
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Services retrieved successfully",
+      services,
     );
   }
 

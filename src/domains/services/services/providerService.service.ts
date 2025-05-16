@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -10,6 +11,8 @@ import ServiceRepository from "@architecture/repositories/service.repository";
 import UserRepository from "@architecture/repositories/user.repository";
 import { UpdateProviderServiceDTO } from "@services/dtos/UpdateProviderServiceDTO";
 import { ListProviderServiceDTO } from "@services/dtos/ListProviderServiceDTO";
+import { ServiceEnum } from "@architecture/enums/service.enum";
+import { GetProviderServiceDTO } from "@services/dtos/GetProvidersDTO";
 
 @Injectable()
 export class ProviderServiceService {
@@ -18,6 +21,26 @@ export class ProviderServiceService {
     private readonly serviceRepository: ServiceRepository,
     private readonly userRepository: UserRepository,
   ) {}
+
+  async findProviders(
+    serviceEnum: ServiceEnum,
+    userId: number,
+    query: GetProviderServiceDTO,
+  ) {
+    const service = await this.serviceRepository.findOneBy({
+      type: serviceEnum,
+    });
+    if (!service) throw new InternalServerErrorException("Service not found");
+    const services = await this.providerServiceRepository.findProviders(
+      service,
+      userId,
+      query,
+    );
+    for (const s of services) {
+      s.toModel();
+    }
+    return services;
+  }
 
   async findProviderServicesById(id: number, query: ListProviderServiceDTO) {
     const providerService =
