@@ -22,21 +22,21 @@ export class PetsService {
   async createPet(createPetDTO: CreatePetDTO, userId: number) {
     const user = await this.usersRepository.findOneBy({ id: userId });
     if (!user) {
-      throw new Error("User not found");
+      throw new NotFoundException("User not found");
     }
 
     const specie = await this.speciesRepository.findOneBy({
       id: createPetDTO.specieId,
     });
     if (!specie) {
-      throw new Error("Specie not found");
+      throw new NotFoundException("Specie not found");
     }
 
     const breed = await this.breedsRepository.findOneBy({
       id: createPetDTO.breedId,
     });
     if (!breed) {
-      throw new Error("Breed not found");
+      throw new NotFoundException("Breed not found");
     }
 
     const petToCreate = this.petsRepository.create({
@@ -97,10 +97,9 @@ export class PetsService {
       pet.specie = specie;
     }
 
-    await this.petsRepository.save({
-      ...pet,
-      ...updatePetDTO,
-    });
+    Object.assign(pet, updatePetDTO);
+
+    await this.petsRepository.save(pet);
   }
 
   async deletePet(userId: number, petId: number) {
@@ -111,7 +110,6 @@ export class PetsService {
     if (!pet) {
       throw new NotFoundException("Pet not found");
     }
-    console.log(pet.user.id, userId);
     if (pet.user.id !== userId) {
       throw new UnauthorizedException("You are not allowed to delete this pet");
     }

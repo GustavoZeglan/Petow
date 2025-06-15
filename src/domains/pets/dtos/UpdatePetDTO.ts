@@ -9,7 +9,7 @@ export class UpdatePetDTO {
   @ApiProperty({
     description: "Name",
   })
-  name: string;
+  petName: string;
 
   @JoiSchema(PetSchema.birthday.optional())
   @ApiProperty({

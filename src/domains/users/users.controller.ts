@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   Req,
 } from "@nestjs/common";
 import { UsersService } from "@users/users.service";
@@ -33,6 +32,18 @@ export class UsersController {
       HttpStatus.CREATED,
       "User created successfully",
       user,
+    );
+  }
+
+  @Get(":id")
+  async getUserInfo(@Req() req: RequestDTO, @Param("id") id: number) {
+    const userId = req.user.id;
+    Logger.log(`User ${userId} is trying to see user ${id}`);
+    const userInfo = await this.usersService.findOne(id);
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "User retrieved successfully",
+      userInfo,
     );
   }
 
