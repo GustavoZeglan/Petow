@@ -30,7 +30,7 @@ export class UploadController {
   async getFile(@Param("name") name: string) {
     const fileUrl = await this.uploadService.getFile(name);
     return new HttpResponseDTO(
-      HttpStatus.CREATED,
+      HttpStatus.OK,
       `File retrieved successfully`,
       fileUrl,
     );
