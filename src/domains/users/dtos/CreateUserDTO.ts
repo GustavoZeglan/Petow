@@ -11,6 +11,9 @@ export class CreateUserDTO {
   })
   name: string;
 
+  @JoiSchema(UserSchema.description.optional())
+  description?: string;
+
   @JoiSchema(UserSchema.cpf.required())
   @ApiProperty({
     description: "cpf",

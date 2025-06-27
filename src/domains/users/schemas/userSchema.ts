@@ -18,6 +18,7 @@ const phoneSchema = Joi.string()
 
 export class UserSchema {
   static userName = CommonSchema.text;
+  static description = CommonSchema.text.optional();
   static email = CommonSchema.text.email();
   static phone = phoneSchema;
   static cpf = cpfSchema;

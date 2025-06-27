@@ -14,19 +14,19 @@ import UserTypeEntity from "@architecture/entities/user_type.entity";
 import { CreateAddressDTO } from "@users/dtos/CreateAddressDTO";
 import AddressEntity from "@architecture/entities/address.entity";
 import { UpdateUserDTO } from "./dtos/UpdateUserDTO";
+import UserRepository from "@architecture/repositories/user.repository";
+import AddressRepository from "@architecture/repositories/address.repository";
 
 @Injectable()
 export class UsersService {
   saltRounds = 10;
 
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly userRepository: UserRepository,
     @InjectRepository(UserTypeEntity)
     private readonly userTypeRepository: Repository<UserTypeEntity>,
-    @InjectRepository(AddressEntity)
-    private readonly addressRepository: Repository<AddressEntity>,
-  ) {}
+    private readonly addressRepository: AddressRepository
+  ) { }
 
   async create(user: CreateUserDTO): Promise<UserEntity> {
     const userExists = await this.userRepository.findOne({
@@ -122,7 +122,7 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<UserEntity | null> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findUserById(id);
     user?.toModel();
     return user;
   }
