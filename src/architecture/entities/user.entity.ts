@@ -24,6 +24,9 @@ export default class UserEntity {
   @Column({ name: "name", type: "varchar", length: "100" })
   name: string;
 
+  @Column({ name: "description", type: "text" })
+  description: string;
+
   @Column({ name: "email", type: "varchar", length: "80", unique: true })
   email: string;
 

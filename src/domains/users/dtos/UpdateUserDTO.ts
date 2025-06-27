@@ -11,6 +11,9 @@ export class UpdateUserDTO {
   })
   name: string;
 
+  @JoiSchema(UserSchema.description.optional())
+  description?: string;
+
   @JoiSchema(UserSchema.phone.optional())
   @ApiProperty({
     description: "phone",
