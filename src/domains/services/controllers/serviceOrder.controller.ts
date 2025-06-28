@@ -79,6 +79,44 @@ export class ServiceOrderController {
     );
   }
 
+  @Get("accept")
+  async getAcceptServiceOrdersOfUser(
+    @Req() request: RequestDTO,
+    @Query(JoiPipe) query: ListServiceOrderDTO,
+  ) {
+    const userId = request.user.id;
+    const serviceOrders =
+      await this.serviceOrderService.getAcceptedServiceOrdersOfUser(
+        query,
+        userId,
+        query.role,
+      );
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Service orders retrieved successfully",
+      serviceOrders,
+    );
+  }
+
+  @Get("toAccept")
+  async getServiceOrdersToAccept(
+    @Req() request: RequestDTO,
+    @Query(JoiPipe) query: ListServiceOrderDTO,
+  ) {
+    const userId = request.user.id;
+    const serviceOrders =
+      await this.serviceOrderService.getServiceOrdersToAccept(
+        query,
+        userId,
+        query.role,
+      );
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Service orders retrieved successfully",
+      serviceOrders,
+    );
+  }
+
   @Get(":id")
   async getServiceOrdersInfo(
     @Req() request: RequestDTO,

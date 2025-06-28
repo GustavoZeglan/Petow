@@ -16,6 +16,8 @@ export class ListServiceOrderDTO {
   @ApiProperty({ description: "Tipo de usuário", required: false })
   role: string;
 
+  accepteds?: boolean;
+
   @JoiSchema(ServiceOrderSchema.order.optional())
   @ApiProperty({ description: "Colunas de ordenação", required: false })
   order?: FindOptionsOrder<ServiceOrderEntity>;
