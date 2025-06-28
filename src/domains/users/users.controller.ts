@@ -35,28 +35,16 @@ export class UsersController {
     );
   }
 
-  @Get(":id")
-  async getUserInfo(@Req() req: RequestDTO, @Param("id") id: number) {
+  @Get()
+  async getYourself(@Req() req: RequestDTO) {
     const userId = req.user.id;
-    Logger.log(`User ${userId} is trying to see user ${id}`);
-    const userInfo = await this.usersService.findOne(id);
+    Logger.log(`User ${userId} is trying to see user yourself`);
+    const userInfo = await this.usersService.findOne(userId);
     return new HttpResponseDTO(
       HttpStatus.OK,
       "User retrieved successfully",
       userInfo,
     );
-  }
-
-  @Patch()
-  async updateUser(
-    @Req() req: RequestDTO,
-    @Body(JoiPipe)
-    updatePetDTO: UpdateUserDTO,
-  ) {
-    const userId = req.user.id;
-    Logger.log(`Trying to update user ${userId}`);
-    await this.usersService.updateUser(updatePetDTO, userId);
-    return new HttpResponseDTO(HttpStatus.OK, "User updated successfully");
   }
 
   @Post("address")
@@ -84,6 +72,30 @@ export class UsersController {
       "Address retrieved successfully",
       address,
     );
+  }
+
+  @Get(":id")
+  async getUserInfo(@Req() req: RequestDTO, @Param("id") id: number) {
+    const userId = req.user.id;
+    Logger.log(`User ${userId} is trying to see user ${id}`);
+    const userInfo = await this.usersService.findOne(id);
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "User retrieved successfully",
+      userInfo,
+    );
+  }
+
+  @Patch()
+  async updateUser(
+    @Req() req: RequestDTO,
+    @Body(JoiPipe)
+    updatePetDTO: UpdateUserDTO,
+  ) {
+    const userId = req.user.id;
+    Logger.log(`Trying to update user ${userId}`);
+    await this.usersService.updateUser(updatePetDTO, userId);
+    return new HttpResponseDTO(HttpStatus.OK, "User updated successfully");
   }
 
   @Delete("address/:id")
