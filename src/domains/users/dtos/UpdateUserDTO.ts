@@ -14,6 +14,13 @@ export class UpdateUserDTO {
   @JoiSchema(UserSchema.description.optional())
   description?: string;
 
+  @JoiSchema(UserSchema.userType.required())
+  @ApiProperty({
+    description: "User type",
+    example: "1 for user and 2 for tutor",
+  })
+  userType: number;
+
   @JoiSchema(UserSchema.phone.optional())
   @ApiProperty({
     description: "phone",

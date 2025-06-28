@@ -93,9 +93,21 @@ export class UsersService {
   }
 
   async updateUser(updateUserDTO: UpdateUserDTO, userId: number) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findUserById(userId);
     if (!user) {
       throw new NotFoundException("User not found");
+    }
+
+    if (updateUserDTO.userType) {
+      const userType = await this.userTypeRepository.findOne({
+        where: { id: updateUserDTO.userType },
+      });
+      if (!userType) {
+        Logger.error("User type not found");
+        throw new BadRequestException("User type not found");
+      } else {
+        user.type = userType;
+      }
     }
 
     await this.userRepository.save({
