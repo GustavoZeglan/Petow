@@ -17,6 +17,7 @@ export default class UserRepository extends BaseRepository<UserEntity> {
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.providerServices", "providerServices")
       .leftJoinAndSelect("providerServices.service", "service")
+      .innerJoinAndSelect("user.type", "type")
       .where("user.id = :userId", { userId })
       .getOne();
   }

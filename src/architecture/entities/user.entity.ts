@@ -93,7 +93,6 @@ export default class UserEntity {
       updatedAt: undefined,
       deletedAt: undefined,
       password: undefined,
-      type: undefined,
       cpf: undefined,
       feedbackCounter: undefined,
       feedbackSum: undefined,
