@@ -12,7 +12,6 @@ import * as bcrypt from "bcryptjs";
 import { CreateUserDTO } from "./dtos/CreateUserDTO";
 import UserTypeEntity from "@architecture/entities/user_type.entity";
 import { CreateAddressDTO } from "@users/dtos/CreateAddressDTO";
-import AddressEntity from "@architecture/entities/address.entity";
 import { UpdateUserDTO } from "./dtos/UpdateUserDTO";
 import UserRepository from "@architecture/repositories/user.repository";
 import AddressRepository from "@architecture/repositories/address.repository";
@@ -25,8 +24,8 @@ export class UsersService {
     private readonly userRepository: UserRepository,
     @InjectRepository(UserTypeEntity)
     private readonly userTypeRepository: Repository<UserTypeEntity>,
-    private readonly addressRepository: AddressRepository
-  ) { }
+    private readonly addressRepository: AddressRepository,
+  ) {}
 
   async create(user: CreateUserDTO): Promise<UserEntity> {
     const userExists = await this.userRepository.findOne({

@@ -13,11 +13,11 @@ export default class UserRepository extends BaseRepository<UserEntity> {
   }
 
   async findUserById(userId: number) {
-    return this.repository.createQueryBuilder("user")
+    return this.repository
+      .createQueryBuilder("user")
       .leftJoinAndSelect("user.providerServices", "providerServices")
       .leftJoinAndSelect("providerServices.service", "service")
       .where("user.id = :userId", { userId })
       .getOne();
   }
-
 }
