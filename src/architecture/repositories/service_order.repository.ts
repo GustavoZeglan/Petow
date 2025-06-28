@@ -80,7 +80,7 @@ export default class ServiceOrderRepository extends BaseRepository<ServiceOrderE
         break;
     }
 
-    qb.andWhere("serviceOrder.isAccepted = :isAccepted", { isAccepted: false });
+    qb.andWhere("serviceOrder.isAccepted IS NULL");
     qb.andWhere("serviceOrder.isCanceled = :isCanceled", { isCanceled: false });
     qb.andWhere("serviceOrder.isDone = :isDone", { isDone: false });
 
