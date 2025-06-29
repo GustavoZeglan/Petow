@@ -15,5 +15,4 @@ export class UpdateServiceProvidedDTO {
 
   @JoiSchema(CommonSchema.text.optional())
   endDate?: boolean;
-
 }

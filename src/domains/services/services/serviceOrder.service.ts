@@ -50,7 +50,6 @@ export class ServiceOrderService {
         provider,
         address,
         durationMinutes: createServiceOrderDTO.durationMinutes,
-        isAccepted: false,
         isDone: false,
         isCanceled: false,
       });
