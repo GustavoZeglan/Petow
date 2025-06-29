@@ -29,7 +29,7 @@ export class ServiceOrderService {
     private readonly addressRepository: AddressRepository,
     private readonly petRepository: PetRepository,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async createServiceOrder(
     userId: number,
@@ -169,10 +169,32 @@ export class ServiceOrderService {
     return updatedServiceOrder.toModel();
   }
 
+  async getServiceOrdersByUser(
+    query: ListServiceOrderDTO,
+    userId: number,
+  ) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!user) throw new NotFoundException("User not found");
+
+    const serviceOrders =
+      await this.serviceOrderRepository.findServiceOrdersByUser(
+        query,
+        userId,
+      );
+
+    for (const serviceOrder of serviceOrders) {
+      serviceOrder.toModel();
+    }
+
+    return serviceOrders;
+  }
+
+
   async getServiceOrdersToAccept(
     query: ListServiceOrderDTO,
     userId: number,
-    role?: string,
   ) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -183,7 +205,6 @@ export class ServiceOrderService {
       await this.serviceOrderRepository.findServiceOrdersToAccept(
         query,
         userId,
-        role,
       );
 
     for (const serviceOrder of serviceOrders) {
@@ -196,7 +217,6 @@ export class ServiceOrderService {
   async getAcceptedServiceOrdersOfUser(
     query: ListServiceOrderDTO,
     userId: number,
-    role?: string,
   ) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -207,7 +227,6 @@ export class ServiceOrderService {
       await this.serviceOrderRepository.findAcceptedServiceOrders(
         query,
         userId,
-        role,
       );
 
     for (const serviceOrder of serviceOrders) {

@@ -21,7 +21,7 @@ import { RequestDTO } from "@architecture/dtos/RequestDTO";
 
 @Controller("service-order")
 export class ServiceOrderController {
-  constructor(private readonly serviceOrderService: ServiceOrderService) {}
+  constructor(private readonly serviceOrderService: ServiceOrderService) { }
 
   @Post()
   async createOrderService(
@@ -79,6 +79,24 @@ export class ServiceOrderController {
     );
   }
 
+  @Get("maded")
+  async getServiceOrdersMadedByUser(
+    @Req() request: RequestDTO,
+    @Query(JoiPipe) query: ListServiceOrderDTO,
+  ) {
+    const userId = request.user.id;
+    const serviceOrders =
+      await this.serviceOrderService.getServiceOrdersByUser(
+        query,
+        userId,
+      );
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Service orders retrieved successfully",
+      serviceOrders,
+    );
+  }
+
   @Get("accept")
   async getAcceptServiceOrdersOfUser(
     @Req() request: RequestDTO,
@@ -89,7 +107,6 @@ export class ServiceOrderController {
       await this.serviceOrderService.getAcceptedServiceOrdersOfUser(
         query,
         userId,
-        query.role,
       );
     return new HttpResponseDTO(
       HttpStatus.OK,
@@ -108,7 +125,6 @@ export class ServiceOrderController {
       await this.serviceOrderService.getServiceOrdersToAccept(
         query,
         userId,
-        query.role,
       );
     return new HttpResponseDTO(
       HttpStatus.OK,
