@@ -39,6 +39,24 @@ export class ServiceProvidedController {
     );
   }
 
+  @Get("order/:id")
+  async getServiceProvidedByOrderId(
+    @Param("id", ParseIntPipe) id: number,
+    @Req() request: RequestDTO,
+  ) {
+    const userId = request.user.id;
+    Logger.log(
+      `User ${userId} is trying to get service provided with id ${id}`,
+    );
+    const serviceProvided =
+      await this.serviceProvidedService.getServiceProvidedByOrderId(id, userId);
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Service Provided retrieved successfully",
+      serviceProvided,
+    );
+  }
+
   @Patch(":id")
   async updateServiceProvidedFlags(
     @Req() request: RequestDTO,

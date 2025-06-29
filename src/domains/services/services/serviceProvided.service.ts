@@ -148,6 +148,42 @@ export class ServiceProvidedService {
     return servicesProvided;
   }
 
+  async getServiceProvidedByOrderId(id: number, userId: number) {
+    const servicesProvided = await this.serviceProvidedRepository.findOne({
+      where: { serviceOrder: { id: id } },
+      relations: ["serviceOrder"],
+    });
+
+    if (!servicesProvided) {
+      Logger.error("Services Provided not found");
+      throw new BadRequestException("Services Provided not found");
+    }
+
+    const serviceOrder = await this.serviceOrderRepository.findOne({
+      where: { id: servicesProvided.serviceOrder.id },
+      relations: ["customer", "provider"],
+    });
+
+    if (!serviceOrder) {
+      Logger.error("Service Order not found");
+      throw new BadRequestException("Service Order not found");
+    }
+
+    const isAuthorized = [
+      serviceOrder.customer?.id,
+      serviceOrder.provider?.id,
+    ].includes(userId);
+
+    if (!isAuthorized) {
+      Logger.error("User is not the customer or provider");
+      throw new BadRequestException("User is not the customer or provider");
+    }
+
+    servicesProvided.toModel();
+
+    return servicesProvided;
+  }
+
   // async getServiceProvided(userId: number, id: number) {
   //   const serviceProvided = await this.serviceProvidedRepository.findOne({
   //     where: { id },
