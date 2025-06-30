@@ -9,10 +9,18 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { PetsModule } from "@pets/pets.module";
 import { UsersService } from "@users/users.service";
 import { UsersController } from "./users.controller";
+import ProviderServiceEntity from "@architecture/entities/provider_service.entity";
+import ServiceEntity from "@architecture/entities/service.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, UserTypeEntity, AddressEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      UserTypeEntity,
+      AddressEntity,
+      ProviderServiceEntity,
+      ServiceEntity,
+    ]),
     forwardRef(() => PetsModule),
   ],
   controllers: [UsersController],

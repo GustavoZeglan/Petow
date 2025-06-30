@@ -15,6 +15,8 @@ import { CreateAddressDTO } from "@users/dtos/CreateAddressDTO";
 import { UpdateUserDTO } from "./dtos/UpdateUserDTO";
 import UserRepository from "@architecture/repositories/user.repository";
 import AddressRepository from "@architecture/repositories/address.repository";
+import ProviderServiceEntity from "@architecture/entities/provider_service.entity";
+import ServiceEntity from "@architecture/entities/service.entity";
 
 @Injectable()
 export class UsersService {
@@ -22,9 +24,13 @@ export class UsersService {
 
   constructor(
     private readonly userRepository: UserRepository,
+    @InjectRepository(ProviderServiceEntity)
+    private readonly providerServiceRepository: Repository<ProviderServiceEntity>,
     @InjectRepository(UserTypeEntity)
     private readonly userTypeRepository: Repository<UserTypeEntity>,
     private readonly addressRepository: AddressRepository,
+    @InjectRepository(ServiceEntity)
+    private readonly serviceRepository: Repository<ServiceEntity>,
   ) {}
 
   async create(user: CreateUserDTO): Promise<UserEntity> {
@@ -55,7 +61,24 @@ export class UsersService {
       type: userType,
     });
 
-    return (await this.userRepository.save(userToCreate)).toModel();
+    const createdUser = await this.userRepository.save(userToCreate);
+
+    const service = await this.serviceRepository.findOne({
+      where: { id: 1 },
+    });
+    if (!service) {
+      throw new BadRequestException("Service not found");
+    }
+
+    const providerService = this.providerServiceRepository.create({
+      price: 0,
+      provider: createdUser,
+      service: service,
+    });
+
+    await this.providerServiceRepository.save(providerService);
+
+    return createdUser.toModel();
   }
 
   async addAddress(userId: number, dto: CreateAddressDTO) {
