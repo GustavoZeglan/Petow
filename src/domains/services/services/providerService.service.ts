@@ -20,7 +20,7 @@ export class ProviderServiceService {
     private readonly providerServiceRepository: ProviderServiceRepository,
     private readonly serviceRepository: ServiceRepository,
     private readonly userRepository: UserRepository,
-  ) {}
+  ) { }
 
   async findProviders(
     serviceEnum: ServiceEnum,
@@ -40,6 +40,19 @@ export class ProviderServiceService {
       s.toModel();
     }
     return services;
+  }
+
+  async findProviderServiceByUserAndServiceId(
+    userId: number,
+    id: number,
+  ) {
+
+    const service = await this.providerServiceRepository.findOne({
+      where: { service: { id: id }, provider: { id: userId } }
+    })
+    if (!service) throw new NotFoundException(`Provider service not found`);
+
+    return service.toModel();
   }
 
   async findProviderServicesById(id: number, query: ListProviderServiceDTO) {

@@ -26,27 +26,7 @@ import { GetProviderServiceDTO } from "../dtos/GetProvidersDTO";
 export class ProviderServiceController {
   constructor(
     private readonly providerServiceService: ProviderServiceService,
-  ) {}
-
-  @Get(":id")
-  async getProviderService(
-    @Req() request: RequestDTO,
-    @Query(JoiPipe) query: ListProviderServiceDTO,
-    @Param("id", ParseIntPipe) id: number,
-  ) {
-    const userId = request.user.id;
-    Logger.log(
-      `User ${userId} is trying to get provider service with id ${id}`,
-    );
-    const providerServices =
-      await this.providerServiceService.findProviderServicesById(id, query);
-
-    return new HttpResponseDTO(
-      HttpStatus.OK,
-      "Provider services retrieved successfully",
-      providerServices,
-    );
-  }
+  ) { }
 
   @Get("provider/:service")
   async getProviders(
@@ -65,6 +45,44 @@ export class ProviderServiceController {
       HttpStatus.OK,
       "Services retrieved successfully",
       services,
+    );
+  }
+
+  @Get("order/:userId/:id")
+  async getProviderServiceByOrderId(
+    @Query(JoiPipe) query: GetProviderServiceDTO,
+    @Req() req: RequestDTO,
+    @Param("userId", ParseIntPipe) userId: number,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    const services = await this.providerServiceService.findProviderServiceByUserAndServiceId(
+      userId,
+      id
+    );
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Services retrieved successfully",
+      services,
+    );
+  }
+
+  @Get(":id")
+  async getProviderService(
+    @Req() request: RequestDTO,
+    @Query(JoiPipe) query: ListProviderServiceDTO,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    const userId = request.user.id;
+    Logger.log(
+      `User ${userId} is trying to get provider service with id ${id}`,
+    );
+    const providerServices =
+      await this.providerServiceService.findProviderServicesById(id, query);
+
+    return new HttpResponseDTO(
+      HttpStatus.OK,
+      "Provider services retrieved successfully",
+      providerServices,
     );
   }
 
