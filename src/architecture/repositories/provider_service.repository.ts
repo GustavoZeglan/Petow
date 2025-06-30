@@ -28,7 +28,7 @@ export default class ProviderServiceRepository extends BaseRepository<ProviderSe
       .innerJoinAndSelect("provider.type", "type")
       .where("providerService.service = :serviceId", { serviceId })
       .andWhere("provider.id != :userId", { userId })
-      .andWhere("type.id = 1");
+      .andWhere("type.id = 2");
 
     if (query.name) {
       services.andWhere("LOWER(provider.name) LIKE LOWER(:name)", {
